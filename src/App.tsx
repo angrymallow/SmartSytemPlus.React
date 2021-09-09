@@ -1,9 +1,9 @@
 import { createStyles, CssBaseline, makeStyles, Theme, Toolbar } from '@material-ui/core';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { useEffect } from 'react';
 import './App.css';
 import Header from './components/header/Header';
 import Sidebar from './components/sidebar/Sidebar';
-
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Apple from './pages/Apple';
 import Pineapple from './pages/Pineapple';
 import Strawberry from './pages/Strawberry';
@@ -29,6 +29,11 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function App() {
   const classes = useStyles();
+
+  useEffect(() => {
+    document.title = "Welcome to Smart System";   
+  }, []);
+
   return (
     <Router>
       <div className={classes.root}>
