@@ -1,0 +1,29 @@
+{
+  "files": {
+    "main.css": "/static/css/main.defe4cba.chunk.css",
+    "main.js": "/static/js/main.eb6548d8.chunk.js",
+    "main.js.map": "/static/js/main.eb6548d8.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.c5655daf.js",
+    "runtime-main.js.map": "/static/js/runtime-main.c5655daf.js.map",
+    "static/js/2.076707f1.chunk.js": "/static/js/2.076707f1.chunk.js",
+    "static/js/2.076707f1.chunk.js.map": "/static/js/2.076707f1.chunk.js.map",
+    "index.html": "/index.html",
+    "static/css/main.defe4cba.chunk.css.map": "/static/css/main.defe4cba.chunk.css.map",
+    "static/js/2.076707f1.chunk.js.LICENSE.txt": "/static/js/2.076707f1.chunk.js.LICENSE.txt",
+    "static/media/Apple.8be07d0c.svg": "/static/media/Apple.8be07d0c.svg",
+    "static/media/Avocado.595fcf44.svg": "/static/media/Avocado.595fcf44.svg",
+    "static/media/Banana.03cfa5e8.svg": "/static/media/Banana.03cfa5e8.svg",
+    "static/media/Centra-No2-Regular.fa648ffe.woff2": "/static/media/Centra-No2-Regular.fa648ffe.woff2",
+    "static/media/Grape.ceb2f467.svg": "/static/media/Grape.ceb2f467.svg",
+    "static/media/Melon.0135be42.svg": "/static/media/Melon.0135be42.svg",
+    "static/media/Pineapple.d455734b.svg": "/static/media/Pineapple.d455734b.svg",
+    "static/media/Strawberry.5cad1ef5.svg": "/static/media/Strawberry.5cad1ef5.svg",
+    "static/media/smartsystemlogo.b5addff6.svg": "/static/media/smartsystemlogo.b5addff6.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.c5655daf.js",
+    "static/js/2.076707f1.chunk.js",
+    "static/css/main.defe4cba.chunk.css",
+    "static/js/main.eb6548d8.chunk.js"
+  ]
+}
