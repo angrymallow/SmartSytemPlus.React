@@ -1,29 +1,29 @@
 {
   "files": {
-    "main.css": "/static/css/main.defe4cba.chunk.css",
-    "main.js": "/static/js/main.eb6548d8.chunk.js",
-    "main.js.map": "/static/js/main.eb6548d8.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.c5655daf.js",
-    "runtime-main.js.map": "/static/js/runtime-main.c5655daf.js.map",
-    "static/js/2.076707f1.chunk.js": "/static/js/2.076707f1.chunk.js",
-    "static/js/2.076707f1.chunk.js.map": "/static/js/2.076707f1.chunk.js.map",
-    "index.html": "/index.html",
-    "static/css/main.defe4cba.chunk.css.map": "/static/css/main.defe4cba.chunk.css.map",
-    "static/js/2.076707f1.chunk.js.LICENSE.txt": "/static/js/2.076707f1.chunk.js.LICENSE.txt",
-    "static/media/Apple.8be07d0c.svg": "/static/media/Apple.8be07d0c.svg",
-    "static/media/Avocado.595fcf44.svg": "/static/media/Avocado.595fcf44.svg",
-    "static/media/Banana.03cfa5e8.svg": "/static/media/Banana.03cfa5e8.svg",
-    "static/media/Centra-No2-Regular.fa648ffe.woff2": "/static/media/Centra-No2-Regular.fa648ffe.woff2",
-    "static/media/Grape.ceb2f467.svg": "/static/media/Grape.ceb2f467.svg",
-    "static/media/Melon.0135be42.svg": "/static/media/Melon.0135be42.svg",
-    "static/media/Pineapple.d455734b.svg": "/static/media/Pineapple.d455734b.svg",
-    "static/media/Strawberry.5cad1ef5.svg": "/static/media/Strawberry.5cad1ef5.svg",
-    "static/media/smartsystemlogo.b5addff6.svg": "/static/media/smartsystemlogo.b5addff6.svg"
+    "main.css": "/SmartSytemPlus.React/static/css/main.6bb48468.chunk.css",
+    "main.js": "/SmartSytemPlus.React/static/js/main.49c1f82b.chunk.js",
+    "main.js.map": "/SmartSytemPlus.React/static/js/main.49c1f82b.chunk.js.map",
+    "runtime-main.js": "/SmartSytemPlus.React/static/js/runtime-main.8b5920c1.js",
+    "runtime-main.js.map": "/SmartSytemPlus.React/static/js/runtime-main.8b5920c1.js.map",
+    "static/js/2.076707f1.chunk.js": "/SmartSytemPlus.React/static/js/2.076707f1.chunk.js",
+    "static/js/2.076707f1.chunk.js.map": "/SmartSytemPlus.React/static/js/2.076707f1.chunk.js.map",
+    "index.html": "/SmartSytemPlus.React/index.html",
+    "static/css/main.6bb48468.chunk.css.map": "/SmartSytemPlus.React/static/css/main.6bb48468.chunk.css.map",
+    "static/js/2.076707f1.chunk.js.LICENSE.txt": "/SmartSytemPlus.React/static/js/2.076707f1.chunk.js.LICENSE.txt",
+    "static/media/Apple.b5dbf3cf.svg": "/SmartSytemPlus.React/static/media/Apple.b5dbf3cf.svg",
+    "static/media/Avocado.f2feac69.svg": "/SmartSytemPlus.React/static/media/Avocado.f2feac69.svg",
+    "static/media/Banana.380f8426.svg": "/SmartSytemPlus.React/static/media/Banana.380f8426.svg",
+    "static/media/Centra-No2-Regular.fa648ffe.woff2": "/SmartSytemPlus.React/static/media/Centra-No2-Regular.fa648ffe.woff2",
+    "static/media/Grape.a4f7a083.svg": "/SmartSytemPlus.React/static/media/Grape.a4f7a083.svg",
+    "static/media/Melon.544550d3.svg": "/SmartSytemPlus.React/static/media/Melon.544550d3.svg",
+    "static/media/Pineapple.658452ff.svg": "/SmartSytemPlus.React/static/media/Pineapple.658452ff.svg",
+    "static/media/Strawberry.c31c551c.svg": "/SmartSytemPlus.React/static/media/Strawberry.c31c551c.svg",
+    "static/media/smartsystemlogo.1e18ec6e.svg": "/SmartSytemPlus.React/static/media/smartsystemlogo.1e18ec6e.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.c5655daf.js",
+    "static/js/runtime-main.8b5920c1.js",
     "static/js/2.076707f1.chunk.js",
-    "static/css/main.defe4cba.chunk.css",
-    "static/js/main.eb6548d8.chunk.js"
+    "static/css/main.6bb48468.chunk.css",
+    "static/js/main.49c1f82b.chunk.js"
   ]
 }
