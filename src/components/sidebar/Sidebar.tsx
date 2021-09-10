@@ -7,6 +7,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import Typography from "@material-ui/core/Typography";
 import { Link, useLocation } from 'react-router-dom';
+// import { AppleIcon } from "../icons/AppleIcon";
 import { ReactComponent as AppleIcon } from "../../assets/icons/Apple.svg";
 import { ReactComponent as PineappleIcon } from "../../assets/icons/Pineapple.svg";
 import { ReactComponent as StrawberryIcon } from "../../assets/icons/Strawberry.svg";
@@ -32,25 +33,25 @@ export default function Sidebar() {
       <div className={classes.drawerContainer}>
         <List> 
           <Link to="/" >
-            <ListItem button selected={location.pathname === "/"}>
+            <ListItem classes={{root: classes.listItemRoot, selected: classes.selected }} button selected={location.pathname === "/"}>
               <ListItemIcon>
-                <AppleIcon className={location.pathname === "/" ? classes.selectedIconColor : ""} />
+                <AppleIcon />
               </ListItemIcon>
-              <ListItemText primary="Apple" />
+              <ListItemText primary="Apple"/>
             </ListItem>
           </Link>
           <Link to="/pineapple">
-            <ListItem button selected={location.pathname === "/pineapple"}>
+            <ListItem classes={{root: classes.listItemRoot, selected: classes.selected }}  button selected={location.pathname === "/pineapple"}>
               <ListItemIcon>
-                <PineappleIcon className={ location.pathname === "/pineapple" ? classes.selectedIconColor: "" } />
+                <PineappleIcon/>
               </ListItemIcon>
               <ListItemText primary="Pineapple" />
             </ListItem>
           </Link>
           <Link to="/strawberry">
-            <ListItem button selected={location.pathname === "/strawberry"} >
+            <ListItem classes={{root: classes.listItemRoot, selected: classes.selected }} button selected={location.pathname === "/strawberry"} >
               <ListItemIcon>
-                <StrawberryIcon className={ location.pathname === "/strawberry" ? classes.selectedIconColor: ""} />
+                <StrawberryIcon />
               </ListItemIcon>
               <ListItemText primary="Strawberry" />
             </ListItem>
@@ -59,33 +60,33 @@ export default function Sidebar() {
         <Divider />
         <List>
           <Link to="/banana">
-            <ListItem button selected={ location.pathname === "/banana"}>
+            <ListItem classes={{root: classes.listItemRoot, selected: classes.selected }} button selected={ location.pathname === "/banana"}>
               <ListItemIcon>
-                <BananaIcon className={ location.pathname === "/banana"? classes.selectedIconColor: "" } />
+                <BananaIcon />
               </ListItemIcon>
               <ListItemText primary="Banana" />
             </ListItem>
           </Link>
           <Link to="/avocado">
-            <ListItem button selected={ location.pathname === "/avocado" }>
+            <ListItem classes={{root: classes.listItemRoot, selected: classes.selected }} button selected={ location.pathname === "/avocado" }>
               <ListItemIcon>
-                <AvocadoIcon className={ location.pathname === "/avocado" ? classes.selectedIconColor: "" } />
+                <AvocadoIcon />
               </ListItemIcon>
               <ListItemText primary="Avocado" />
             </ListItem>
           </Link>
           <Link to="/melon">
-            <ListItem button selected={ location.pathname === "/melon" }>
+            <ListItem classes={{root: classes.listItemRoot, selected: classes.selected }} button selected={ location.pathname === "/melon" }>
               <ListItemIcon>
-                <MelonIcon  className={ location.pathname === "/melon" ? classes.selectedIconColor: "" }/>
+                <MelonIcon />
               </ListItemIcon>
               <ListItemText primary="Melon" />
             </ListItem>
           </Link>
           <Link to="grapes">
-            <ListItem button selected={ location.pathname === "/grapes"} >
+            <ListItem classes={{root: classes.listItemRoot, selected: classes.selected }} button selected={ location.pathname === "/grapes"} >
               <ListItemIcon>
-                <GrapesIcon className={ location.pathname === "/grapes" ?  classes.selectedIconColor: "" } />
+                <GrapesIcon />
               </ListItemIcon>
               <ListItemText primary="Grapes" />
             </ListItem>
