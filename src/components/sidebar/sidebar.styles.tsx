@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) => {
           '& .MuiListItemIcon-root': {
             '& svg': {
               '& path': {
-                stroke: theme.palette.primary.main,
+                stroke: theme.palette.secondary.main,
                 strokeOpacity: '1'
               }
             }
