@@ -6,7 +6,7 @@ import createStyles from "@material-ui/styles/createStyles";
 import List from "@material-ui/core/List";
 import { Link } from 'react-router-dom';
 import { ReactComponent as DayIcon } from "../assets/icons/Day.svg";
-import { ReactComponent as NightIcon} from "../../assets/icons/Night.svg";
+// import { ReactComponent as NightIcon} from "../../assets/icons/Night.svg";
 import { colors } from '../themes/variables';
 import ListItem from "@material-ui/core/ListItem";
 import { Avatar, Box, ListItemAvatar, ListItemText } from "@material-ui/core";
