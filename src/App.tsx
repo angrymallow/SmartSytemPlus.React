@@ -11,6 +11,7 @@ import Banana from './pages/Banana';
 import Avocado from './pages/Avocado';
 import Melon from './pages/Melon';
 import Grapes from './pages/Grapes';
+import Ivsi from './pages/Ivsi';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -50,6 +51,7 @@ function App() {
             <Route path="/avocado" component={Avocado}/>
             <Route path="/melon" component={Melon}/>
             <Route path="/grapes" component={Grapes}/>
+            <Route path="/ivsi" component={Ivsi}/>
         </Switch>
           {/* <Typography paragraph>
             Consequat mauris nunc congue nisi vitae suscipit. Fringilla est ullamcorper eget nulla
