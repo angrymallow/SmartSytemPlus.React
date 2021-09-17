@@ -1,16 +1,7 @@
-import Container from "@material-ui/core/Container/Container";
-import { Theme } from "@material-ui/core/styles/createTheme";
-import makeStyles from "@material-ui/core/styles/makeStyles";
-import Typography from "@material-ui/core/Typography";
-import createStyles from "@material-ui/styles/createStyles";
-import List from "@material-ui/core/List";
+import { Theme, makeStyles, createStyles } from "@material-ui/core/styles";
+import { Avatar, Box, ListItemAvatar, ListItemText, Container, Typography, List, ListItem } from "@material-ui/core";
 import { Link } from 'react-router-dom';
-
 import { ReactComponent as DayIcon } from "../assets/icons/Day.svg";
-// import { ReactComponent as NightIcon} from "../../assets/icons/Night.svg";
-import { colors } from '../themes/variables';
-import ListItem from "@material-ui/core/ListItem";
-import { Avatar, Box, ListItemAvatar, ListItemText } from "@material-ui/core";
 import { ReactComponent as AppleAvatar } from '../assets/icons/AppleAvatar.svg';
 import { ReactComponent as AvocadoAvatar } from '../assets/icons/AvocadoAvatar.svg';
 import { ReactComponent as CoconutAvatar } from '../assets/icons/CoconutAvatar.svg';
@@ -18,6 +9,7 @@ import { ReactComponent as LemonAvatar } from '../assets/icons/LemonAvatar.svg';
 import { ReactComponent as OrangeAvatar } from '../assets/icons/OrangeAvatar.svg';
 import { ReactComponent as PearAvatar } from '../assets/icons/PearAvatar.svg';
 import { StyledButton } from "../custom/buttons";
+import { colors } from '../themes/variables';
 
 
 const getAvatar = (fruit: string) => {

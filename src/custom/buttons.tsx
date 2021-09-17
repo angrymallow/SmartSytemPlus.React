@@ -1,5 +1,5 @@
 import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
+import { Button } from '@material-ui/core';
 
 // The `withStyles()` higher-order component is injecting a `classes`
 // prop that is used by the `Button` component.

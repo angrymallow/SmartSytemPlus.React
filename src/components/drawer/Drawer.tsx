@@ -1,11 +1,7 @@
 
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography'
-
+import { Typography, Toolbar, CssBaseline } from '@material-ui/core'
 import Sidebar from '../sidebar/Sidebar';
 import Header from '../header/Header';
-
 import useStyles from './drawer.styles';
 
 export default function ClippedDrawer() {
