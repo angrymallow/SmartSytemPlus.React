@@ -6,8 +6,10 @@ import Button from '@material-ui/core/Button';
 export const StyledButton = withStyles({
   root: {
     letterSpacing: '0.5px',
+    padding: '6px 30px',
   },
   label: {
     textTransform: 'none',
+    fontWeight: 500
   },
 })(Button);

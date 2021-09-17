@@ -1,5 +1,5 @@
 import { createTheme } from '@material-ui/core/styles';
-import CentraRegular from '../../assets/fonts/Centra-No2-Regular.woff2';
+import CentraRegular from '../assets/fonts/Centra-No2-Regular.woff2';
 
 const centra = {
   fontFamily: 'Centra No2',
@@ -55,6 +55,7 @@ const theme = createTheme({
     body2: {
       fontWeight: 700,
     },
+    
   },
   overrides: {
     MuiCssBaseline: {
