@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { AppBar, Toolbar, InputBase, Typography, Menu, MenuItem, Divider } from '@material-ui/core';
 import { SearchOutlined as SearchIcon, KeyboardArrowDownOutlined as KeyboardArrowDownIcon } from '@material-ui/icons';
 import useStyles  from "./header.styles"
-import { ReactComponent as AppLogo } from '../../assets/smartsystemlogo.svg';
+import { AppLogo } from '../../assets/icons';
 
 export default function Header() {
   const classes = useStyles();

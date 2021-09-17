@@ -1,13 +1,7 @@
 import { Theme, makeStyles, createStyles } from "@material-ui/core/styles";
 import { Avatar, Box, ListItemAvatar, ListItemText, Container, Typography, List, ListItem } from "@material-ui/core";
 import { Link } from 'react-router-dom';
-import { ReactComponent as DayIcon } from "../assets/icons/Day.svg";
-import { ReactComponent as AppleAvatar } from '../assets/icons/AppleAvatar.svg';
-import { ReactComponent as AvocadoAvatar } from '../assets/icons/AvocadoAvatar.svg';
-import { ReactComponent as CoconutAvatar } from '../assets/icons/CoconutAvatar.svg';
-import { ReactComponent as LemonAvatar } from '../assets/icons/LemonAvatar.svg';
-import { ReactComponent as OrangeAvatar } from '../assets/icons/OrangeAvatar.svg';
-import { ReactComponent as PearAvatar } from '../assets/icons/PearAvatar.svg';
+import { DayIcon, AppleAvatar, AvocadoAvatar, CoconutAvatar, LemonAvatar, OrangeAvatar, PearAvatar } from "../assets/icons";
 import { StyledButton } from "../custom/buttons";
 import { colors } from '../themes/variables';
 

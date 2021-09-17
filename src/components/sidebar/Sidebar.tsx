@@ -1,12 +1,6 @@
 import { Drawer, Toolbar, List, Divider, ListItem, ListItemText, ListItemIcon, Typography } from "@material-ui/core";
 import { Link, useLocation } from 'react-router-dom';
-import { ReactComponent as AppleIcon } from "../../assets/icons/Apple.svg";
-import { ReactComponent as PineappleIcon } from "../../assets/icons/Pineapple.svg";
-import { ReactComponent as StrawberryIcon } from "../../assets/icons/Strawberry.svg";
-import { ReactComponent as BananaIcon } from "../../assets/icons/Banana.svg";
-import { ReactComponent as AvocadoIcon } from "../../assets/icons/Avocado.svg";
-import { ReactComponent as MelonIcon } from "../../assets/icons/Melon.svg";
-import { ReactComponent as GrapesIcon } from "../../assets/icons/Grape.svg";
+import { AppleIcon, PineappleIcon, StrawberryIcon, BananaIcon, AvocadoIcon, MelonIcon, GrapesIcon } from "../../assets/icons";
 import useStyles from "./sidebar.styles";
 
 export default function Sidebar() {  
