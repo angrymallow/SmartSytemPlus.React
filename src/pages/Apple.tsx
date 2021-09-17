@@ -5,6 +5,7 @@ import Typography from "@material-ui/core/Typography";
 import createStyles from "@material-ui/styles/createStyles";
 import List from "@material-ui/core/List";
 import { Link } from 'react-router-dom';
+
 import { ReactComponent as DayIcon } from "../assets/icons/Day.svg";
 // import { ReactComponent as NightIcon} from "../../assets/icons/Night.svg";
 import { colors } from '../themes/variables';
@@ -143,7 +144,9 @@ const Apple = () => {
             </Link>
           </List>
           <Box marginY={3}>
-           <StyledButton variant="outlined" color="primary" className={classes.setupButton}>IVSI Form Setup</StyledButton>
+            <Link to="/ivsi">
+              <StyledButton  variant="outlined" color="primary" className={classes.setupButton}>IVSI Form Setup</StyledButton>
+            </Link>
           </Box>
           <StyledButton variant="outlined" color="primary" className={classes.setupButton}>Binding Setup</StyledButton>
         </Container>
