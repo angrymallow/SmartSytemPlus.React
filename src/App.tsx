@@ -21,9 +21,11 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     content: {
       flexGrow: 1,
-      padding: theme.spacing(3),
+      padding: theme.spacing(4),
+      paddingLeft: theme.spacing(15),
+      paddingRight: theme.spacing(15),
       background: 'white',
-      overflow: 'auto'
+      overflow: 'auto',
     },
   }),
 );
