@@ -163,7 +163,6 @@ const Bindings = () => {
     setAnchorEl(event.currentTarget);
     setCurrentBinding(bindings[index]);
 
-    console.log('should show popup')
   }
 
   const handleUpdateCurrentBinding = (binding: IBindings) => {
@@ -171,7 +170,6 @@ const Bindings = () => {
     bindingList[binding.index] = binding;
   
     setBindings(bindingList);
-    console.log('update current binding is called');
     handlePopoverClose();
     setStatus('pendingsave')
   }
