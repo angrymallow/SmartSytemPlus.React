@@ -2,7 +2,7 @@ import { Theme, makeStyles, createStyles } from "@material-ui/core/styles";
 import { Avatar, Box, ListItemAvatar, ListItemText, Container, Typography, List, ListItem } from "@material-ui/core";
 import { Link } from 'react-router-dom';
 import { DayIcon, AppleAvatar, AvocadoAvatar, CoconutAvatar, LemonAvatar, OrangeAvatar, PearAvatar } from "../assets/icons";
-import { StyledButton } from "../custom/buttons";
+import { StyledButton } from "../custom/button/StyledButton";
 import { colors } from '../themes/variables';
 
 
@@ -117,7 +117,7 @@ const Apple = () => {
             {
               activities.map((activity) => {
                 return (
-                  <ListItem>
+                  <ListItem key={activity.name}>
                     <ListItemText classes= {{secondary: classes.secondaryText, primary: classes.primaryText}}  primary={activity.name} secondary={activity.time}/>
                   </ListItem>
                 )
@@ -134,7 +134,9 @@ const Apple = () => {
               <StyledButton  variant="outlined" color="primary" className={classes.setupButton}>IVSI Form Setup</StyledButton>
             </Link>
           </Box>
+          <Link to="/bindings">
           <StyledButton variant="outlined" color="primary" className={classes.setupButton}>Binding Setup</StyledButton>
+          </Link>
         </Container>
         <Container component="div">
         </Container>
@@ -144,7 +146,7 @@ const Apple = () => {
             {
               announcements.map((announcement) => {
                 return (
-                  <ListItem>
+                  <ListItem key={announcement.activity}>
                     <ListItemAvatar>
                       <Avatar>
                         {getAvatar(announcement.avatar)}
