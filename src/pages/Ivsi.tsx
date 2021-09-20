@@ -1,20 +1,15 @@
+import { useEffect, useState } from "react";
 import { Box, Breadcrumbs, IconButton, Popover, Switch, TextField } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Table, TableCell, TableContainer, TableRow, Toolbar, Typography, Paper, TableBody} from "@material-ui/core";
 import { NavigateNextOutlined, EditOutlined as EditIcon } from '@material-ui/icons';
 import { colors } from "../themes/variables";
-import { StyledButton } from "../custom/buttons";
-import { useEffect, useState } from "react";
-import { StyledTableCellHeader, StyledTableHead } from "../custom/table";
-interface HeadCell {
-  id: string,
-  numeric?: boolean,
-  label: string,
-  width?: number | 'auto'
-}
+import { IHeader, TableHeader } from "../components/table/TableHeader";
+import { useGlobalStyles } from "../themes/global.styles";
+import { SizedButton } from "../custom/button/SizedButton";
 
-const tableHeaders: HeadCell[] = [
+const tableHeaders: IHeader[] = [
   {
     id: 'name',
     label: 'Name',
@@ -34,6 +29,10 @@ const tableHeaders: HeadCell[] = [
     id: 'status',
     label: 'Status',
     width: 'auto'
+  },
+  {
+    id: 'edit',
+    empty: true,
   }
 ] 
 interface IIvsi {
@@ -88,21 +87,12 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     table: { 
     },
-    tableHeader: {
-      background: colors.black5,
-    },
-    headerCell: {
-      // fontWeight: 700, 
-    },
-    dataCell: {
-      // fontWeight: 400,
+    action: {
+      marginRight: '20px'
     },
     root: {
       display: 'flex',
       height: '100%',
-    },
-    link: {
-      fontSize: '14px',
     },
     caption: {
       color: colors.black36,
@@ -116,40 +106,9 @@ const useStyles = makeStyles((theme: Theme) =>
     dataContainer: {
       padding: '10px 0px'
     },
-    buttons: {
-      width: '150px',
-      marginRight: '20px'
-    },
-    popper: {
-      background: '#ffffff',
-      boxShadow: theme.shadows[1],
-      borderRadius: '3px'
-    }
   }),
 );
 
-
-const TableHeader = (props: any)  => {
-
-  const { headers }: { headers: HeadCell[] } = props;
-
-  return(
-    <StyledTableHead>
-      <TableRow>
-        {
-          headers.map((header) => (
-            <StyledTableCellHeader
-              key={header.id}
-              align={header.numeric ? 'right' : 'left'}
-              style={{width: header.width === 'auto' ? 'auto' : `${header.width}%`}}
-            >{header.label}</StyledTableCellHeader>
-          ))
-        }
-        <TableCell></TableCell>
-      </TableRow>
-    </StyledTableHead>
-  )
-}
 
 const initialIvsiState: IIvsi = {
   description: "",
@@ -170,6 +129,7 @@ const Ivsi = () => {
   const [description, setDescription] = useState<string>('');
 
   const classes = useStyles();
+  const globalClasses = useGlobalStyles();
 
 
   useEffect(() => {
@@ -201,13 +161,6 @@ const Ivsi = () => {
     newList[index] = ivsiData;
     setIvsiList(newList);
     setStatus('pendingsave');
-  }
-
-  const handleCancel = () => {
-    setStatus('unchange');
-    const origState = {...initialState};
-    setIvsiList([...origState.data]);
-    console.log('orig state', origState);
   }
   
   const handleSave = () => {
@@ -257,8 +210,8 @@ const Ivsi = () => {
         <Box p={3}> 
           <TextField id="description" fullWidth label="Description" multiline variant="outlined" value={description} onChange={(e) => setDescription(e.target.value)}/>
           <Box marginTop={2} display="flex" justifyContent="center"> 
-            <StyledButton variant="outlined" color="primary" className={classes.buttons} onClick={() => setOpen(false)}>Cancel</StyledButton>
-            <StyledButton variant="contained" color="primary" className={classes.buttons} onClick={() => handleUpdateDescription(currentIvsi?.index, description)}>Update</StyledButton>
+            <SizedButton variant="outlined" color="primary" className={classes.action} onClick={() => setOpen(false)}>Cancel</SizedButton>
+            <SizedButton variant="contained" color="primary" className={classes.action} onClick={() => handleUpdateDescription(currentIvsi?.index, description)}>Update</SizedButton>
           </Box>
         </Box>
       </Popover>
@@ -266,7 +219,7 @@ const Ivsi = () => {
         <Toolbar disableGutters>
           <Typography variant="h5">IVSI Forms</Typography>
         </Toolbar>
-        <TableContainer className={classes.table}>
+        <TableContainer className={globalClasses.table}>
           <Table>
             <TableHeader headers={tableHeaders}></TableHeader>
             <TableBody>
@@ -278,7 +231,7 @@ const Ivsi = () => {
                          {data.name}
                       </Typography>
                       <Link to="/ivsi">
-                        <Typography color="primary" className={classes.link}>Download</Typography>
+                        <Typography color="primary" className={globalClasses.link}>Download</Typography>
                       </Link>
                     </TableCell>
                     <TableCell scope="row">
@@ -319,8 +272,7 @@ const Ivsi = () => {
       {
         status === 'pendingsave' ? (
           <Box display="flex" justifyContent="center" height="100px" alignItems="center">
-            <StyledButton variant="outlined"  className={classes.buttons} color="primary" onClick={handleCancel}>Cancel</StyledButton>
-            <StyledButton variant="contained" className={classes.buttons} color="primary" onCanPlayThrough={handleSave}>Save</StyledButton>
+            <SizedButton variant="contained" className={classes.action} color="primary" onCanPlayThrough={handleSave}>Save</SizedButton>
           </Box>
         ) : null
       }

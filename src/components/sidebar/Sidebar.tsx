@@ -19,7 +19,7 @@ export default function Sidebar() {
       <div className={classes.drawerContainer}>
         <List> 
           <Link to="/" >
-            <ListItem classes={{root: classes.listItemRoot, selected: classes.selected }} button selected={location.pathname === "/"}>
+            <ListItem classes={{root: classes.listItemRoot, selected: classes.selected }} button selected={(location.pathname === "/" || location.pathname.includes('ivsi') || location.pathname.includes('bindings'))}>
               <ListItemIcon>
                 <AppleIcon />
               </ListItemIcon>
