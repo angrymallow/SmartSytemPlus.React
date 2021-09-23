@@ -1,6 +1,7 @@
+import { useMemo, useState } from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { createStyles, CssBaseline, makeStyles, Theme, Toolbar } from '@material-ui/core';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { useEffect } from 'react';
 import './App.css';
 import Header from './components/header/Header';
 import Sidebar from './components/sidebar/Sidebar';
@@ -13,6 +14,7 @@ import Melon from './pages/Melon';
 import Grapes from './pages/Grapes';
 import Ivsi from './pages/Ivsi';
 import Bindings from './pages/Bindings';
+import { SearchContext } from './context/SearchContext';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -31,34 +33,42 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
+const queryClient = new QueryClient();
+
 function App() {
+
+  const [searchPlaceholder, setSearchPlaceholder] = useState<string>('search');
+  const [search, setSearch] = useState<string>('');
+  const [isSearchHidden, setSearchIsHidden] = useState<boolean>(false);
   const classes = useStyles();
-  useEffect(() => {
-    document.title = "Welcome to Smart System";   
-  }, []);
+  const searchValue = useMemo(() => ({searchPlaceholder, setSearchPlaceholder, search, setSearch, isSearchHidden, setSearchIsHidden}), [searchPlaceholder, setSearchPlaceholder, search, setSearch, isSearchHidden, setSearchIsHidden]);
 
   return (
-    <Router>
-      <div className={classes.root}>
-        <CssBaseline/>
-        <Header/>
-        <Sidebar/>
-        <main className={classes.content}>
-          <Toolbar/>
-          <Switch>
-            <Route exact path="/" component={Apple}/>
-            <Route path="/pineapple" component={Pineapple}/>
-            <Route path="/strawberry" component={Strawberry}/>
-            <Route path="/banana" component={Banana}/>
-            <Route path="/avocado" component={Avocado}/>
-            <Route path="/melon" component={Melon}/>
-            <Route path="/grapes" component={Grapes}/>
-            <Route path="/ivsi" component={Ivsi}/>
-            <Route path="/bindings" component={Bindings}/>
-        </Switch>
-        </main>
-      </div>
-    </Router>
+    <QueryClientProvider client={queryClient}>
+      <Router>
+        <div className={classes.root}>
+          <CssBaseline/>
+          <SearchContext.Provider value={searchValue}>
+            <Header/>
+            <Sidebar/>
+            <main className={classes.content}>
+              <Toolbar/>
+              <Switch>
+                <Route exact path="/" component={Apple}/>
+                <Route path="/pineapple" component={Pineapple}/>
+                <Route path="/strawberry" component={Strawberry}/>
+                <Route path="/banana" component={Banana}/>
+                <Route path="/avocado" component={Avocado}/>
+                <Route path="/melon" component={Melon}/>
+                <Route path="/grapes" component={Grapes}/>
+                <Route path="/ivsi" component={Ivsi}/>
+                <Route path="/bindings" component={Bindings}/>
+            </Switch>
+            </main>
+          </SearchContext.Provider>
+        </div>
+      </Router>
+    </QueryClientProvider>  
   );
 }
 

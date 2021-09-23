@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Box, Breadcrumbs, IconButton, Popover, Switch, TextField } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -8,6 +8,7 @@ import { colors } from "../themes/variables";
 import { IHeader, TableHeader } from "../components/table/TableHeader";
 import { useGlobalStyles } from "../themes/global.styles";
 import { SizedButton } from "../custom/button/SizedButton";
+import { SearchContext } from "../context/SearchContext";
 
 const tableHeaders: IHeader[] = [
   {
@@ -127,10 +128,16 @@ const Ivsi = () => {
   const [open, setOpen] = useState(false);
   const [currentIvsi, setCurrentIvsi] = useState<IIvsi>(initialIvsiState); 
   const [description, setDescription] = useState<string>('');
+  const {setSearchIsHidden} = useContext(SearchContext);
 
   const classes = useStyles();
   const globalClasses = useGlobalStyles();
 
+  useEffect(() => {
+    setSearchIsHidden(true);
+    console.log('ivsi oninit')
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const origState = {...initialState};
