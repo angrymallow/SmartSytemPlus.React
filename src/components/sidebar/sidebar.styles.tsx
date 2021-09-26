@@ -1,5 +1,5 @@
 
-import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
+import { createStyles, Theme, makeStyles, alpha } from '@material-ui/core/styles';
 
 const drawerWidth = 240;
 const backgroundColor = '#FBFAFA';
@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme: Theme) => {
         background: backgroundColor,
         height: '100%',
         padding: '10px',
-        paddingRight: '15px',
+        paddingRight: '0',
         paddingLeft: '15px'
       },
       footer: {
@@ -60,9 +60,10 @@ const useStyles = makeStyles((theme: Theme) => {
         padding: '10px 20px',
         background: backgroundColor,
       },
-    
       selected: {  
-
+        borderRight: '5px',
+        borderRightColor: alpha(theme.palette.primary.main, 0.6),
+        borderRightStyle: 'solid'
       },
   
     })
