@@ -11,39 +11,13 @@ import {
   CircularProgress,
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
-import {
-  DayIcon,
-  AppleAvatar,
-  AvocadoAvatar,
-  CoconutAvatar,
-  LemonAvatar,
-  OrangeAvatar,
-  PearAvatar,
-} from "../assets/icons";
+import { DayIcon } from "../assets/icons";
 import { StyledButton } from "../custom/button/StyledButton";
 import { colors } from "../themes/variables";
 import { useContext, useEffect } from "react";
 import { SearchContext } from "../context/SearchContext";
 import useLogs from "../queries/useLogs";
-
-const getAvatar = (fruit: string) => {
-  switch (fruit) {
-    case "apple":
-      return <AppleAvatar />;
-    case "orange":
-      return <OrangeAvatar />;
-    case "avocado":
-      return <AvocadoAvatar />;
-    case "coconut":
-      return <CoconutAvatar />;
-    case "lemon":
-      return <LemonAvatar />;
-    case "pear":
-      return <PearAvatar />;
-    default:
-      return <AppleAvatar />;
-  }
-};
+import { getAvatar } from "../helpers/avatar-helpers";
 
 const useStyles = makeStyles((theme: Theme) => {
   return createStyles({
@@ -139,13 +113,13 @@ const ActivitiesAndAnnouncements = () => {
                   );
                 })}
                 <Link to="/">
-                    <ListItem>
-                      <ListItemText
-                        primary="See more"
-                        className={classes.linkText}
-                      />
-                    </ListItem>
-                  </Link>
+                  <ListItem>
+                    <ListItemText
+                      primary="See more"
+                      className={classes.linkText}
+                    />
+                  </ListItem>
+                </Link>
               </List>
             </Container>
             <Container>
