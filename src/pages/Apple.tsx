@@ -18,6 +18,7 @@ import { useContext, useEffect } from "react";
 import { SearchContext } from "../context/SearchContext";
 import useLogs from "../queries/useLogs";
 import { getAvatar } from "../helpers/avatar-helpers";
+import { UserContext } from "../context/UserProvider";
 
 const useStyles = makeStyles((theme: Theme) => {
   return createStyles({
@@ -52,12 +53,13 @@ const useStyles = makeStyles((theme: Theme) => {
   });
 });
 
-const Greetings = () => {
+const Greetings = (props: any) => {
   const classes = useStyles();
+  const { name } = props; 
   return (
     <Container className={classes.infoContainer}>
       <Box display="flex" alignItems="center">
-        <Typography variant="h5">Good day John!</Typography>
+        <Typography variant="h5">{`Good day ${name}!`}</Typography>
       </Box>
       <DayIcon />
     </Container>
@@ -197,6 +199,8 @@ const Apple = () => {
   const { setSearch, setSearchIsHidden, setSearchPlaceholder } =
     useContext(SearchContext);
 
+  const { user } = useContext<any>(UserContext);
+
   useEffect(() => {
     setSearchPlaceholder("Search T-kun...");
     setSearch("");
@@ -206,7 +210,7 @@ const Apple = () => {
 
   return (
     <>
-      <Greetings />
+      <Greetings name={user.fullName.split(' ')[0]}/>
       <ActivitiesAndAnnouncements />
       <SetupLinks />
     </>
