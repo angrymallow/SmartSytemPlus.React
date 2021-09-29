@@ -13,6 +13,7 @@ import { ReactComponent as LemonAvatar } from './svg/LemonAvatar.svg';
 import { ReactComponent as OrangeAvatar } from './svg/OrangeAvatar.svg';
 import { ReactComponent as PearAvatar } from './svg/PearAvatar.svg';
 import { ReactComponent as AppLogo } from './svg/smartsystemlogo.svg';
+import { ReactComponent as ExcelIcon } from './svg/Excel.svg';
 
 export { 
       AppleIcon, 
@@ -30,4 +31,5 @@ export {
       OrangeAvatar,
       PearAvatar,
       AppLogo,
+      ExcelIcon
     } 
