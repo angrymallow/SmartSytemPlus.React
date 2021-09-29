@@ -76,6 +76,51 @@ const theme = createTheme({
       colorDefault: {
         backgroundColor: colors.primaryLight,
       },
+    },
+    MuiStepIcon: {
+      root: {
+        "&.MuiStepIcon-active, &.MuiStepIcon-completed": {
+          color: colors.secondary!,
+        },
+      },
+    },
+    MuiButton: {
+      root: {
+        letterSpacing: "0.5px",
+        padding: "6px 30px",
+      },
+      label: {
+        textTransform: "none",
+        fontWeight: 500,
+      },
+    },
+    MuiInputLabel: {
+      root: {
+        // fontWeight: 700,
+        color: colors.primary,
+      },
+    },
+    MuiFilledInput: {
+      root: {
+        backgroundColor: colors.black5,
+      },
+    },
+    MuiTypography: {
+      caption: {
+        color: colors.black54,
+      },
+    },
+    MuiTableHead: {
+      root: {
+        backgroundColor: colors.black5,
+      },
+    },
+    MuiTableCell: {
+      root: {
+        "&.MuiTableCell-head": {
+          fontWeight: 700,
+        }
+      }
     }
   },
 });
