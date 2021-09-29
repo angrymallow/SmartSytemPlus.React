@@ -462,7 +462,7 @@ const ProcessRawDataStep = (props: any) => {
 };
 
 const ReviewAndCompleteStep = (props: any) => {
-  const { file, splitAddressOptions, handleProcessStrawberry, handleNew } =
+  const { file, handleProcessStrawberry, handleNew } =
     props;
   const classes = useStyles();
   const [pineapple, setPineapple] = useState<any>();
@@ -598,8 +598,6 @@ const PineappleSteps = () => {
   const [splitAddressOptions, setSplitAddressOptions] = useState<any>();
   const [file, setFile] = useState<any>();
 
-  const classes = useStyles();
-
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
@@ -673,9 +671,6 @@ const steps = [
 
 const Pineapple = () => {
   const { setSearchPlaceholder } = useContext(SearchContext);
-  const [showPatternCreationOption, setShowPatternCreationOption] =
-    useState<boolean>(true);
-  const classes = useStyles();
 
   useEffect(() => {
     setSearchPlaceholder("Search Pineapple Pattern...");
