@@ -30,7 +30,7 @@ export const announcements = [
   },
   {
     id: 2,
-    name: "Rahesg Koothrappali",
+    name: "Rajesh Koothrappali",
     avatar: "orange",
     activity: "Uploaded new T- Kun data",
   },
