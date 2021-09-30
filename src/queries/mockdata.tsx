@@ -24,25 +24,25 @@ export const activities = [
 export const announcements = [
   {
     id: 1,
-    name: "John Doe",
+    name: "Sheldon Cooper",
     avatar: "lemon",
     activity: "Created Address Binding for DAL",
   },
   {
     id: 2,
-    name: "Jane Doe",
+    name: "Rajesh Koothrappali",
     avatar: "orange",
     activity: "Uploaded new T- Kun data",
   },
   {
     id: 3,
-    name: "Jason Farmer",
+    name: "Leonard Hofstadter",
     avatar: "coconut",
     activity: "Jason recently joined the team, hooray!",
   },
   {
     id: 4,
-    name: "Promdi Boy",
+    name: "Howard Wolowitz",
     avatar: "pear",
     activity: "Created Strawberry",
   },
