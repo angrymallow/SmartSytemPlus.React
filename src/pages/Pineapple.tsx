@@ -255,7 +255,7 @@ const SetupPineapple = (props: any) => {
         <ErrorOutlineOutlined color="secondary" />
         <Box component="div" marginLeft={1}>
           <Typography variant="body2">Need a new pattern?</Typography>
-          <Link to="/pineapple">
+          <Link to="/patterns/add">
             <Typography variant="caption" color="primary">
               Go to Pattern Creation
             </Typography>

@@ -22,7 +22,7 @@ const UserProvider = (props: any) => {
   useEffect(() => {
    setTimeout(() => {
       setUser({
-        fullName: 'Carmelo Besid',
+        fullName: 'Bryan',
         type: 'Administrator',
         avatar: 'avocado',
       });

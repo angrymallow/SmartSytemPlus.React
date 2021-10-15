@@ -121,7 +121,15 @@ const theme = createTheme({
           fontWeight: 700,
         }
       }
-    }
+    },
+  MuiInputBase: {
+      root: {
+        backgroundColor: colors.white,
+        "&.Mui-Focused": {
+          backgroundColor: colors.white,
+        }
+      },
+    },
   },
 });
 
