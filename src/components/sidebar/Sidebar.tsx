@@ -27,7 +27,7 @@ export default function Sidebar() {
             </ListItem>
           </Link>
           <Link to="/pineapple">
-            <ListItem classes={{root: classes.listItemRoot, selected: classes.selected }}  button selected={location.pathname === "/pineapple"}>
+            <ListItem classes={{root: classes.listItemRoot, selected: classes.selected }}  button selected={location.pathname === "/pineapple" || location.pathname.includes("pattern")}>
               <ListItemIcon>
                 <PineappleIcon/>
               </ListItemIcon>

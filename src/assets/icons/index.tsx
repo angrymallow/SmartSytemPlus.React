@@ -14,7 +14,10 @@ import { ReactComponent as OrangeAvatar } from './svg/OrangeAvatar.svg';
 import { ReactComponent as PearAvatar } from './svg/PearAvatar.svg';
 import { ReactComponent as AppLogo } from './svg/smartsystemlogo.svg';
 import { ReactComponent as ExcelIcon } from './svg/Excel.svg';
-
+import { ReactComponent as PatternImage } from './svg/Pattern.svg';
+import { ReactComponent as EmptyHeaderImage } from './svg/EmptyHeader.svg';
+import { ReactComponent as SearchImage } from './svg/Search.svg';
+import { ReactComponent as CompletedImage } from './svg/Completed.svg';
 export { 
       AppleIcon, 
       PineappleIcon,  
@@ -31,5 +34,9 @@ export {
       OrangeAvatar,
       PearAvatar,
       AppLogo,
-      ExcelIcon
+      ExcelIcon,
+      PatternImage,
+      EmptyHeaderImage,
+      SearchImage,
+      CompletedImage
     } 

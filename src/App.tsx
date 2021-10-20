@@ -22,6 +22,7 @@ import Ivsi from "./pages/Ivsi";
 import Bindings from "./pages/Bindings";
 import { SearchContext } from "./context/SearchContext";
 import { UserProvider } from "./context/UserProvider";
+import Patterns from "./pages/Patterns";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -65,6 +66,7 @@ function App() {
       setSearchIsHidden,
     ]
   );
+  
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -87,6 +89,7 @@ function App() {
                   <Route path="/grapes" component={Grapes} />
                   <Route path="/ivsi" component={Ivsi} />
                   <Route path="/bindings" component={Bindings} />
+                  <Route path="/patterns" component={Patterns} />
                 </Switch>
               </main>
             </SearchContext.Provider>

@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme: Theme) => {
 
 const Greetings = (props: any) => {
   const classes = useStyles();
-  const { name } = props; 
+  const { name } = props;
   return (
     <Container className={classes.infoContainer}>
       <Box display="flex" alignItems="center">
@@ -186,9 +186,11 @@ const SetupLinks = () => {
       </Container>
       <Container>
         <Box marginY={3}>
-          <StyledButton variant="contained" color="primary">
-            Go to Pattern Creation
-          </StyledButton>
+          <Link to="/patterns">
+            <StyledButton variant="contained" color="primary">
+              Go to Patterns
+            </StyledButton>
+          </Link>
         </Box>
       </Container>
     </Container>
@@ -210,7 +212,7 @@ const Apple = () => {
 
   return (
     <>
-      <Greetings name={user.fullName.split(' ')[0]}/>
+      <Greetings name={user.fullName.split(" ")[0]} />
       <ActivitiesAndAnnouncements />
       <SetupLinks />
     </>
