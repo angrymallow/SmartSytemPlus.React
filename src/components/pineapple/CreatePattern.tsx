@@ -130,7 +130,7 @@ const Content = () => {
               <Typography variant="h6">You've succesfully created a pattern, Bryan!</Typography>
               <Typography variant="body2">It’s time to use the pattern you created. Other users can use it to too!</Typography>
               <Box display="flex" marginY={5}>
-                <Link to="/Pineapple">
+                <Link to="/pineapple">
                   <Button variant="contained" color="primary" style={{ marginRight: 16 }}>
                     Go to Pineapple Uniform
                   </Button>
