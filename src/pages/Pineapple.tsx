@@ -23,25 +23,18 @@ import {
   TableBody,
   TableRow,
 } from "@material-ui/core";
-import {
-  CheckCircleOutline,
-  ErrorOutlineOutlined,
-  FileCopyOutlined,
-} from "@material-ui/icons";
+import { CheckCircleOutline, ErrorOutlineOutlined, FileCopyOutlined } from "@material-ui/icons";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { SearchContext } from "../context/SearchContext";
 import { Link } from "react-router-dom";
 import useCountries from "../queries/useCountries";
 import { useQuery } from "react-query";
-import {
-  getPatternByCountry,
-  getPatternInfoById,
-  processRawData,
-} from "../queries/mockdata";
+import { getPatternByCountry, getPatternInfoById, processRawData } from "../queries/mockdata";
 import { useDropzone } from "react-dropzone";
 import { colors } from "../themes/variables";
 import { ExcelIcon } from "../assets/icons/index";
 import { createTableDataFromObject } from "../helpers/grid-helpers";
+import { Autocomplete } from "@material-ui/lab";
 
 const useStyles = makeStyles((theme: Theme) => {
   return createStyles({
@@ -84,8 +77,8 @@ const useStyles = makeStyles((theme: Theme) => {
     },
     stepHeader: {
       marginTop: theme.spacing(2),
-      marginBottom: theme.spacing(2)
-    }
+      marginBottom: theme.spacing(2),
+    },
   });
 });
 
@@ -121,12 +114,22 @@ const SelectCountry = (props: any) => {
 };
 
 const SelectPattern = (props: any) => {
-  const { country, pattern, setPattern } = props;
+  const { country, pattern: patternId, setPattern: setPatternId } = props;
+  const { isLoading: patternLoading, data: patternData } = useQuery<any>(["patterns", country], () => getPatternByCountry(country));
 
-  const { isLoading: patternLoading, data: patternData } = useQuery<any>(
-    ["patterns", country],
-    () => getPatternByCountry(country)
-  );
+  const [selectedPattern, setSelectedPattern] = useState<any>({ id: 0, name: "" });
+
+  useEffect(() => {
+    const patterns = patternData?.patterns;
+    if (patterns) {
+      const sPattern = patterns.find((pattern: any) => pattern.id === patternId);
+      if (sPattern) {
+        setSelectedPattern(sPattern);
+      } else {
+        setSelectedPattern({ id: 0, name: "" });
+      }
+    }
+  }, [patternId, patternData]);
 
   if (patternLoading)
     return (
@@ -136,34 +139,24 @@ const SelectPattern = (props: any) => {
       </Box>
     );
   return (
-    <TextField
-      id="pattern"
-      label="Pineapple Pattern"
-      variant="filled"
-      value={pattern}
-      onChange={(e) => setPattern(+e.target.value)}
+    <Autocomplete
       fullWidth
-      select
-    >
-      {patternData.patterns.map((pattern: any) => (
-        <MenuItem key={pattern.id} value={pattern.id}>
-          {pattern.name}
-        </MenuItem>
-      ))}
-    </TextField>
+      options={patternData.patterns}
+      value={selectedPattern}
+      onChange={(e: any, value: any | null) => {
+        setSelectedPattern(value);
+        setPatternId(value?.id ? value.id : 0);
+      }}
+      getOptionLabel={(pattern: any) => pattern.name}
+      renderInput={(params) => <TextField label="Pineapple Pattern" {...params} variant="filled" />}
+    />
   );
 };
 
 const PatternInfo = (props: any) => {
   const { details } = props;
   return (
-    <Box
-      marginTop={2}
-      width="100%"
-      display="flex"
-      flexWrap="wrap"
-      height="100px"
-    >
+    <Box marginTop={2} width="100%" display="flex" flexWrap="wrap" height="100px">
       <div style={{ width: "50%" }}>
         <Typography variant="caption" component="div">
           Country
@@ -194,38 +187,30 @@ const PatternInfo = (props: any) => {
 
 const SetupPineapple = (props: any) => {
   const { handleNext, initialState } = props;
-  const [name, setName] = useState<string>("");
-  const [country, setCountry] = useState<number>(0);
-  const [pattern, setPattern] = useState<number>(0);
+  const [name, setName] = useState<string>(initialState.name);
+  const [country, setCountry] = useState<number>(initialState.country);
+  const [pattern, setPattern] = useState<number>(initialState.pattern.id);
   const [canNext, setCanNext] = useState<boolean>(false);
 
-  const { isLoading: patternDetailsLoading, data: patternDetails } =
-    useQuery<any>(
-      ["patterndetails", pattern],
-      () => getPatternInfoById(pattern, country)
-      // { cacheTime: 0 }
-    );
-
-  useEffect(() => {
-    if (country <= 0) setPattern(0);
-  }, [country]);
+  const { isLoading: patternDetailsLoading, data: patternDetails } = useQuery<any>(
+    ["patterndetails", pattern, country],
+    () => getPatternInfoById(pattern, country),
+    { cacheTime: 0 }
+  );
 
   useEffect(() => {
     setCanNext(pattern > 0);
   }, [pattern]);
 
   useEffect(() => {
-    if (name.length <= 0) setCountry(0);
-  }, [name]);
+    // Kapag may initial state, pero may country na.
+    if (initialState.country > 0 && country <= 0) return;
+    setPattern(0);
+  }, [country, initialState]);
 
   useEffect(() => {
-    if (!!initialState) {
-      setName(initialState.name);
-      setCountry(initialState.country);
-      setPattern(initialState.pattern.id);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (name.length <= 0) setCountry(0);
+  }, [name]);
 
   const classes = useStyles();
 
@@ -241,17 +226,13 @@ const SetupPineapple = (props: any) => {
       },
     });
   };
+
   return (
     <>
-      <Typography className={classes.stepHeader} variant="h6">Setup Pineapple Pattern</Typography>
-      <Box
-        flexGrow="1"
-        marginY={3}
-        display="flex"
-        alignItems="center"
-        padding={1}
-        className={classes.box}
-      >
+      <Typography className={classes.stepHeader} variant="h6">
+        Setup Pineapple Pattern
+      </Typography>
+      <Box flexGrow="1" marginY={3} display="flex" alignItems="center" padding={1} className={classes.box}>
         <ErrorOutlineOutlined color="secondary" />
         <Box component="div" marginLeft={1}>
           <Typography variant="body2">Need a new pattern?</Typography>
@@ -274,27 +255,13 @@ const SetupPineapple = (props: any) => {
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="flex-start"
-          width="100%"
-          marginTop="2ch"
-        >
+        <Box display="flex" justifyContent="space-between" alignItems="flex-start" width="100%" marginTop="2ch">
           <Box display="flex" alignItems="center" width="40%" height={75}>
-            {name.length > 0 ? (
-              <SelectCountry country={country} setCountry={setCountry} />
-            ) : null}
+            {name.length > 0 ? <SelectCountry country={country} setCountry={setCountry} /> : null}
           </Box>
 
           <Box display="flex" alignItems="center" width="55%" height={75}>
-            {country > 0 ? (
-              <SelectPattern
-                country={country}
-                pattern={pattern}
-                setPattern={setPattern}
-              />
-            ) : null}
+            {country > 0 ? <SelectPattern country={country} pattern={pattern} setPattern={setPattern} /> : null}
           </Box>
         </Box>
         {pattern > 0 ? (
@@ -309,13 +276,7 @@ const SetupPineapple = (props: any) => {
         ) : null}
       </Box>
 
-      <Button
-        className={classes.stepAction}
-        variant="contained"
-        disabled={!canNext}
-        color="primary"
-        onClick={handlePatternDetailsSave}
-      >
+      <Button className={classes.stepAction} variant="contained" disabled={!canNext} color="primary" onClick={handlePatternDetailsSave}>
         Next
       </Button>
     </>
@@ -331,7 +292,6 @@ const ProcessRawDataStep = (props: any) => {
   const [rawFile, setRawFile] = useState<any>();
 
   const onDrop = useCallback((acceptedFiles) => {
-    console.log(acceptedFiles, "acceptedfiles");
     acceptedFiles.forEach((e: any) => {
       setRawFile({ name: e.name, path: e.path, size: e.path });
     });
@@ -370,7 +330,9 @@ const ProcessRawDataStep = (props: any) => {
   const classes = useStyles();
   return (
     <Box>
-      <Typography className={classes.stepHeader} variant="h6">Upload and Process Raw Data</Typography>
+      <Typography className={classes.stepHeader} variant="h6">
+        Upload and Process Raw Data
+      </Typography>
       <Box width="80%">
         <Typography variant="body1" color="primary" style={{ marginBottom: 5 }}>
           Pineapple Details
@@ -384,12 +346,7 @@ const ProcessRawDataStep = (props: any) => {
           </Typography>
           <FormControlLabel
             control={
-              <Checkbox
-                color="primary"
-                checked={splitConsignee}
-                onChange={handleSplitConsigneeChange}
-                inputProps={{ "aria-label": "controlled" }}
-              />
+              <Checkbox color="primary" checked={splitConsignee} onChange={handleSplitConsigneeChange} inputProps={{ "aria-label": "controlled" }} />
             }
             label="Split Consignee - 5 Columns"
           />
@@ -405,17 +362,9 @@ const ProcessRawDataStep = (props: any) => {
             label="Split Notify Party - 5 Columns"
           />
         </Box>
-        <Box
-          className={`${classes.dropZone} ${
-            isDragActive || fileUploaded ? classes.dropZoneActive : ""
-          }`}
-        >
+        <Box className={`${classes.dropZone} ${isDragActive || fileUploaded ? classes.dropZoneActive : ""}`}>
           {fileUploaded ? (
-            <Box
-              display="flex"
-              alignItems="center"
-              className={classes.fileInfo}
-            >
+            <Box display="flex" alignItems="center" className={classes.fileInfo}>
               <ExcelIcon />
               <Typography variant="body2" style={{ fontWeight: 400 }}>
                 {rawFile.name}
@@ -439,21 +388,10 @@ const ProcessRawDataStep = (props: any) => {
         </Box>
       </Box>
       <Box width="25%" display="flex" alignItems="space-around">
-        <Button
-          className={classes.stepAction}
-          variant="outlined"
-          color="primary"
-          onClick={handleBack}
-        >
+        <Button className={classes.stepAction} variant="outlined" color="primary" onClick={handleBack}>
           Back
         </Button>
-        <Button
-          className={classes.stepAction}
-          variant="contained"
-          disabled={!canNext}
-          color="primary"
-          onClick={handleProcessRawData}
-        >
+        <Button className={classes.stepAction} variant="contained" disabled={!canNext} color="primary" onClick={handleProcessRawData}>
           Process
         </Button>
       </Box>
@@ -462,16 +400,11 @@ const ProcessRawDataStep = (props: any) => {
 };
 
 const ReviewAndCompleteStep = (props: any) => {
-  const { file, handleProcessStrawberry, handleNew } =
-    props;
+  const { file, handleProcessStrawberry, handleNew } = props;
   const classes = useStyles();
   const [pineapple, setPineapple] = useState<any>();
 
-  const { isLoading, data } = useQuery<any>(
-    ["pineappledata", file],
-    () => processRawData(file),
-    { cacheTime: 0 }
-  );
+  const { isLoading, data } = useQuery<any>(["pineappledata", file], () => processRawData(file), { cacheTime: 0 });
 
   useEffect(() => {
     if (!!data) {
@@ -482,12 +415,7 @@ const ReviewAndCompleteStep = (props: any) => {
 
   if (isLoading) {
     return (
-      <Box
-        display="flex"
-        height={500}
-        justifyContent="center"
-        alignItems="center"
-      >
+      <Box display="flex" height={500} justifyContent="center" alignItems="center">
         <CircularProgress style={{ marginRight: 10 }} />
         <span>Processing Raw Data, please wait...</span>
       </Box>
@@ -499,14 +427,10 @@ const ReviewAndCompleteStep = (props: any) => {
       <Box marginTop={3} className={classes.completeContainer}>
         <Box display="flex">
           <CheckCircleOutline color="primary" />
-          <Typography variant="h6">
-            Awesome! You succesfully created pineapple uniform
-          </Typography>
+          <Typography variant="h6">Awesome! You succesfully created pineapple uniform</Typography>
         </Box>
         <Box display="flex">
-          <Typography variant="caption">
-            You can copy this document number to search in the pineapple list
-          </Typography>
+          <Typography variant="caption">You can copy this document number to search in the pineapple list</Typography>
           <FileCopyOutlined style={{ height: "16px", color: colors.primary }} />
           <Typography variant="body2" color="primary">
             PN12300001
@@ -571,20 +495,10 @@ const ReviewAndCompleteStep = (props: any) => {
         </Paper>
       </Box>
       <Box width="100%" display="flex" marginTop={10}>
-        <Button
-          className={classes.stepAction}
-          variant="outlined"
-          color="primary"
-          onClick={handleNew}
-        >
+        <Button className={classes.stepAction} variant="outlined" color="primary" onClick={handleNew}>
           Create New
         </Button>
-        <Button
-          className={classes.stepAction}
-          variant="contained"
-          color="primary"
-          onClick={handleProcessStrawberry}
-        >
+        <Button className={classes.stepAction} variant="contained" color="primary" onClick={handleProcessStrawberry}>
           Process Strawberry
         </Button>
       </Box>
@@ -594,7 +508,13 @@ const ReviewAndCompleteStep = (props: any) => {
 
 const PineappleSteps = () => {
   const [activeStep, setActiveStep] = useState(0);
-  const [details, setDetails] = useState<any>();
+  const [details, setDetails] = useState<any>({
+    name: "",
+    country: 0,
+    pattern: {
+      id: 0,
+    },
+  });
   const [splitAddressOptions, setSplitAddressOptions] = useState<any>();
   const [file, setFile] = useState<any>();
 
@@ -638,17 +558,12 @@ const PineappleSteps = () => {
         })}
       </Stepper>
       {activeStep === 0 ? (
-        <SetupPineapple
-          initialState={details}
-          handleNext={(details: any) => handleSaveDetails(details)}
-        />
+        <SetupPineapple initialState={details} handleNext={(details: any) => handleSaveDetails(details)} />
       ) : activeStep === 1 ? (
         <ProcessRawDataStep
           patternName={details.name}
           details={details.pattern}
-          handleNext={(splitOption: any, file: any) =>
-            handleProcessData(splitOption, file)
-          }
+          handleNext={(splitOption: any, file: any) => handleProcessData(splitOption, file)}
           handleBack={handleBack}
         />
       ) : (
@@ -663,11 +578,7 @@ const PineappleSteps = () => {
   );
 };
 
-const steps = [
-  "Setup Pineapple Details",
-  "Process Raw Data",
-  "Review and Complete",
-];
+const steps = ["Setup Pineapple Details", "Process Raw Data", "Review and Complete"];
 
 const Pineapple = () => {
   const { setSearchPlaceholder } = useContext(SearchContext);
