@@ -1,12 +1,6 @@
 import { useMemo, useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
-import {
-  createStyles,
-  CssBaseline,
-  makeStyles,
-  Theme,
-  Toolbar,
-} from "@material-ui/core";
+import { createStyles, CssBaseline, makeStyles, Theme, Toolbar } from "@material-ui/core";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "./App.css";
 import Header from "./components/header/Header";
@@ -57,16 +51,8 @@ function App() {
       isSearchHidden,
       setSearchIsHidden,
     }),
-    [
-      searchPlaceholder,
-      setSearchPlaceholder,
-      search,
-      setSearch,
-      isSearchHidden,
-      setSearchIsHidden,
-    ]
+    [searchPlaceholder, setSearchPlaceholder, search, setSearch, isSearchHidden, setSearchIsHidden]
   );
-  
 
   return (
     <QueryClientProvider client={queryClient}>
