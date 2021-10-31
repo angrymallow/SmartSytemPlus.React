@@ -1,8 +1,12 @@
 import { ValueTypeEnum } from "../types/enums/ValueTypeEnum";
-import { GetPatternsByCountryResponse } from "../types/interfaces/api/GetPatternsByCountryResponse";
-import { GetPatternsResponse } from "../types/interfaces/api/GetPatternsResponse";
+import { APIResponse } from "../types/interfaces/api/APIResponse";
+import { ICountry } from "../types/interfaces/ICountry";
 import { IPattern } from "../types/interfaces/IPattern";
 import { IPatternByCountry } from "../types/interfaces/IPatternByCountry";
+import { IPatternDto } from "../types/interfaces/IPatternDto";
+import countries from "./countries";
+import forms from "./forms";
+import patternTypes from "./patternTypes";
 
 const patterns: IPattern[] = [
   {
@@ -351,7 +355,7 @@ const patterns: IPattern[] = [
   }
 ]
 
-const getPatternByCountryAsync = async (countryId: number): Promise<GetPatternsByCountryResponse> => {
+const getPatternByCountryAsync = async (countryId: number): Promise<APIResponse<IPatternByCountry[]>> => {
   return new Promise((resolve, reject) =>
     setTimeout(() => {
       const result = patterns
@@ -368,7 +372,7 @@ const getPatternByCountryAsync = async (countryId: number): Promise<GetPatternsB
   );
 }
 
-const getAllPatternsAsync = async (): Promise<GetPatternsResponse> => {
+const getAllPatternsAsync = async (): Promise<APIResponse<IPattern[]>> => {
   return new Promise((resolve, reject) =>
     setTimeout(() => {
       resolve({ success: true, data: patterns })
@@ -376,7 +380,53 @@ const getAllPatternsAsync = async (): Promise<GetPatternsResponse> => {
   )
 }
 
-const addPatternAsync = async (pattern: IPattern) => {
+const getCountriesWitPatternAsync = async (): Promise<APIResponse<ICountry[]>> => {
+  return new Promise((resolve, reject) =>
+    setTimeout(() => {
+      const allCountries = countries;
+
+      const countryIds = [...Array.from(new Set(patterns.map((pattern) => pattern.countryId)))];
+      const result = countryIds.map((countryId) => ({
+        id: countryId,
+        name: allCountries.find((country) => country.id === countryId)?.name
+      } as ICountry))
+
+      resolve({ success: true, data: result })
+    }, 1000)
+  )
+}
+
+const getPatternsAsync = async (): Promise<APIResponse<IPatternDto[]>> => {
+  return new Promise((resolve, reject) =>
+    setTimeout(() => {
+      const result = patterns.map((pattern) => ({
+        id: pattern.id,
+        patternName: pattern.name,
+        country: countries.find((country) => country.id === pattern.countryId)?.name,
+        formType: forms.find((form) => form.id === pattern.formId)?.name,
+        patternType: patternTypes.find((patternType) => patternType.id === pattern.typeId)?.name,
+        addedBy: "Bryan Alvarez",
+        addedDate: "10/22/2021"
+      } as IPatternDto));
+
+      resolve({ success: true, data: result });
+    }, 1500)
+  )
+}
+
+const getDuplicatePatternsAsync = async (name: string, country: number): Promise<APIResponse<{ isDuplicate: boolean, duplicatePatterId: number }>> => {
+  return new Promise((resolve, reject) =>
+    setTimeout(() => {
+      const duplicate = patterns.find(
+        (pattern) => pattern.name.toLowerCase() === name.toLowerCase() && pattern.countryId === country
+      );
+
+      resolve({ success: true, data: { isDuplicate: !!duplicate, duplicatePatterId: !!duplicate ? duplicate.id : 0 } })
+    }, 1500)
+  )
+}
+
+const addPatternAsync = async (pattern: IPattern): Promise<APIResponse<number>> => {
   return new Promise((resolve, reject) =>
     setTimeout(() => {
       const newId = patterns.sort((a, b) => b.id - a.id)[0]?.id + 1;
@@ -384,11 +434,12 @@ const addPatternAsync = async (pattern: IPattern) => {
         ...pattern,
         id: newId,
       });
-      resolve({ status: 200, id: newId })
+      resolve({ success: true, data: newId })
     }, 1000)
   )
 }
 
+
 export default patterns;
 
-export { getPatternByCountryAsync, getAllPatternsAsync, addPatternAsync }
+export { getPatternByCountryAsync, getAllPatternsAsync, addPatternAsync, getCountriesWitPatternAsync, getPatternsAsync, getDuplicatePatternsAsync }

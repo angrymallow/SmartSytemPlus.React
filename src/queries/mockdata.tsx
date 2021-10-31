@@ -1,5 +1,4 @@
 import { Header } from "../types/interfaces/Header";
-import { IUser } from "../types/interfaces/IUser";
 
 export const activities = [
   {
@@ -152,20 +151,6 @@ const patternCodes = [
   },
 ];
 
-const users: IUser[] = [
-  {
-    id: 1,
-    fullName: "Carmelo Besid",
-    nickName: "Melo",
-    avatar: "Apple"
-  },
-  {
-    id: 2,
-    fullName: "Bryan Alvarez",
-    nickName: "Bryan",
-    avatar: "Avocado"
-  }
-]
 
 const patterns: any[] = [
   {
