@@ -12,16 +12,15 @@ import {
   Theme,
   Typography,
 } from "@material-ui/core";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { BootstrapInput, StyledInputLabel } from "../../../custom/input";
+import { PatternDetails } from "../../../types/interfaces/PatternDetails";
 import { CheckCircleOutlined, EditOutlined, ErrorOutlineOutlined } from "@material-ui/icons";
+import { useQuery } from "react-query";
+import { getDuplicatePatternByNameAndCountry } from "../../../queries/mockdata";
 import LabeledText from "../../textdisplay/LabeledText";
 import { colors } from "../../../themes/variables";
 import { LookupContext } from "../../../context";
-import useDuplicatePatterns from "../../../queries/patterns/useDuplicatePatterns";
-import Description from "../../description/Description";
-import { useFormik } from "formik";
-import * as Yup from "yup";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -51,6 +50,7 @@ const DuplicateIcon = (props: any) => {
   }
 };
 
+
 const PrimaryDetailsView = (props: any) => {
   const { canEdit, handleEdit, details } = props;
   const classes = useStyles();
@@ -76,75 +76,77 @@ const PrimaryDetailsView = (props: any) => {
   );
 };
 
-type DuplicateAdornmentProps = {
-  loading: boolean;
-  duplicate: boolean;
-};
+const PrimaryDetailsStep = (props: any) => {
+  const { initialState, handleNext } = props;
+  const [details, setDetails] = useState<PatternDetails>(initialState);
+  const [canSave, setCanSave] = useState<boolean>(false);
+  const [name, setName] = useState<string>("");
+  const [country, setCountry] = useState<number>(0);
+  const [isDuplicate, setIsDuplicate] = useState<boolean>(false);
 
-const DuplicateAdornment = (props: DuplicateAdornmentProps) => {
-  const { loading, duplicate } = props;
-  return <InputAdornment position="end">{loading ? <CircularProgress size={24} /> : <DuplicateIcon hasDuplicate={duplicate} />}</InputAdornment>;
-};
+  const lookup = useContext(LookupContext)
 
-const PatternDetailsSchema = Yup.object({
-  country: Yup.number().required().min(1),
-  name: Yup.string().required(),
-  form: Yup.number().required().min(1),
-  type: Yup.number().required().min(1),
-});
+  const { isLoading: isDuplicateChecking, data: dupResult } = useQuery<any>(
+    ["duplicatePattern", { name, country }],
+    () => getDuplicatePatternByNameAndCountry(name, country),
+    { cacheTime: 0, enabled: name.length > 0 && country > 0 }
+  );
 
-type PrimaryDetailsProps = {
-  initialState: {
-    countryId: number;
-    name: string;
-    formId: number;
-    typeId: number;
+  useEffect(() => {
+    if (!isDuplicateChecking) {
+      if (dupResult?.result?.isDuplicate) {
+        setIsDuplicate(true);
+      } else {
+        setIsDuplicate(false);
+        setDetails({ ...details, name: name, countryId: country });
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dupResult]);
+
+  useEffect(() => {
+    setName(initialState.name);
+    setCountry(initialState.countryId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleSelectCountry = (e: any) => {
+    setCountry(e.target.value);
   };
-  handleSubmit(countryId: number, name: string, formId: number, typeId: number): void;
-};
 
-const PrimaryDetailsStep = (props: PrimaryDetailsProps) => {
-  const { initialState, handleSubmit } = props;
-  const lookup = useContext(LookupContext);
-  
-  const formik = useFormik({
-    initialValues: {
-      name: initialState.name,
-      country: initialState.countryId,
-      form: initialState.formId,
-      type: initialState.typeId,
-    },
-    validationSchema: PatternDetailsSchema,
-    validateOnMount: true, 
-    onSubmit: (values) => {
-      handleSubmit(values.country, values.name, values.form, values.type);
-    },
+  const handleInputName = (e: any) => {
+    setName(e.target.value);
+  };
 
-  });
+  const handleSelectForm = (e: any) => {
+    setDetails({ ...details, formId: e.target.value });
+  };
 
-  
-  const { isLoading: isDuplicateChecking, data: dupResult } = useDuplicatePatterns(formik.values.name, formik.values.country);
+  const handleSelectType = (e: any) => {
+    setDetails({ ...details, patternId: e.target.value });
+  };
+
+  const handleSaveDetails = () => {
+    handleNext(details);
+  };
+
+  useEffect(() => {
+    const allowSave =
+      details?.name.length > 0 && details?.countryId > 0 && details?.formId > 0 && details?.patternId > 0 && !isDuplicateChecking && !isDuplicate;
+    setCanSave(allowSave);
+  }, [details, isDuplicateChecking, isDuplicate]);
+
   const classes = useStyles();
 
   return (
-    <Box marginTop={5} maxWidth="70%">
-      <Description
-        description="Enter Patterm Primary Details"
-        caption=">Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur, corporis quam quidem minima fugit distinctio exercitationem?"
-      />
+    <Box marginTop={5} maxWidth="50%">
+      <Typography variant="body1">Enter Pattern Primary Details</Typography>
       <Box marginTop={5} component="form" className={classes.form}>
         <FormControl fullWidth>
           <StyledInputLabel shrink htmlFor="pattern-country">
             Country
           </StyledInputLabel>
-          <Select
-            id="pattern-country"
-            name="country"
-            fullWidth
-            input={<BootstrapInput />}
-            value={formik.values.country}
-            onChange={formik.handleChange}
-          >
+          <Select id="pattern-country" fullWidth input={<BootstrapInput />} value={country} onChange={handleSelectCountry} name="countryId">
             {lookup?.countries?.map((country: any) => (
               <MenuItem key={country.id} value={country.id}>
                 {country.name}
@@ -157,15 +159,24 @@ const PrimaryDetailsStep = (props: PrimaryDetailsProps) => {
             Pattern Name
           </StyledInputLabel>
           <BootstrapInput
-            id="pattern-name"
-            name="name"
             fullWidth
             placeholder="Enter Pattern Name"
-            endAdornment={formik.values.name.length > 0 && formik.values.country > 0 && <DuplicateAdornment loading={isDuplicateChecking} duplicate={dupResult?.isDuplicate} />}
-            value={formik.values.name}
-            onChange={formik.handleChange}
+            id="pattern-name"
+            endAdornment={
+              name.length <= 0 || country <= 0 ? null : isDuplicateChecking ? (
+                <InputAdornment position="end">
+                  <CircularProgress size={24} />{" "}
+                </InputAdornment>
+              ) : (
+                <InputAdornment position="end">
+                  <DuplicateIcon hasDuplicate={isDuplicate} />
+                </InputAdornment>
+              )
+            }
+            value={name}
+            onChange={handleInputName}
           />
-          {dupResult?.isDuplicate && !isDuplicateChecking ? (
+          {isDuplicate && !isDuplicateChecking ? (
             <Typography variant="caption" color="error">
               Pattern name is already used, edit instead?
             </Typography>
@@ -175,14 +186,7 @@ const PrimaryDetailsStep = (props: PrimaryDetailsProps) => {
           <StyledInputLabel shrink htmlFor="pattern-form">
             IVSI Form
           </StyledInputLabel>
-          <Select
-            id="pattern-form"
-            name="form"
-            fullWidth
-            input={<BootstrapInput />}
-            value={formik.values.form}
-            onChange={formik.handleChange}
-          >
+          <Select id="pattern-form" fullWidth input={<BootstrapInput />} value={details?.formId} onChange={handleSelectForm}>
             {lookup?.forms?.map((form: any) => (
               <MenuItem key={form.id} value={form.id}>
                 {form.name}
@@ -194,22 +198,16 @@ const PrimaryDetailsStep = (props: PrimaryDetailsProps) => {
           <StyledInputLabel shrink htmlFor="pattern-type">
             Pattern Type
           </StyledInputLabel>
-          <Select
-            id="pattern-type"
-            name="type"
-            fullWidth
-            input={<BootstrapInput />}
-            value={formik.values.type}
-            onChange={formik.handleChange}
-          >
+          <Select id="pattern-type" fullWidth input={<BootstrapInput />} value={details?.patternId} onChange={handleSelectType}>
             {lookup?.types?.map((type: any) => (
               <MenuItem key={type.id} value={type.id}>
-                {`${type.name} (${type.code})`}
+                {" "}
+                {`${type.name} (${type.code})`}{" "}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
-        <Button variant="contained" color="primary" disabled={!formik.isValid || dupResult?.isDuplicate || isDuplicateChecking} onClick={() => formik.handleSubmit()}>
+        <Button variant="contained" color="primary" disabled={!canSave} onClick={handleSaveDetails}>
           Next
         </Button>
       </Box>

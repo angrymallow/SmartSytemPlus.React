@@ -1,13 +1,15 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Box, Button, CircularProgress, FormControl, Typography } from "@material-ui/core";
 // import { useFormik } from "formik";
 import { PrimaryDetailsView } from "./PrimaryDetailsStep";
 import { HeaderItem } from "./SetupBindingStep";
 // import StyledInputLabel from "../../../custom/input/StyledInputLabel";
 import BootstrapInput from "../../../custom/input/BootstrapInput";
+import { LookupContext } from "../../../context";
 
 function ReviewPatternStep(props: any) {
-  const { handleBack, handleSubmit, details, bindings, innerLimit, countries, types, forms, submitting } = props;
+  const { handleBack, handleSubmit, details, bindings, innerLimit, submitting } = props;
+  const lookup = useContext(LookupContext)
 
   const [detailsView, setDetailsView] = useState<any>({
     name: "",
@@ -33,9 +35,9 @@ function ReviewPatternStep(props: any) {
   useEffect(() => {
     setDetailsView({
       name: details.name,
-      country: countries?.find((country: any) => country.id === details.countryId)?.name,
-      form: forms?.find((form: any) => form.id === details.formId)?.name,
-      patternType: types?.find((type: any) => type.id === details.patternId)?.name,
+      country: lookup?.countries?.find((country: any) => country.id === details.countryId)?.name,
+      form: lookup?.forms?.find((form: any) => form.id === details.formId)?.name,
+      patternType: lookup?.types?.find((type: any) => type.id === details.patternId)?.name,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
