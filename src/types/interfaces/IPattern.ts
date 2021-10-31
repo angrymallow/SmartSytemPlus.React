@@ -6,6 +6,7 @@ export interface IPattern {
   typeId: number,
   formId: number,
   countryId: number,
+  innerCargo?: number,
   addedBy: number,
   addedDate: string,
   updatedBy: number,
