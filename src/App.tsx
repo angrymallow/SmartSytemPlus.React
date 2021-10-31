@@ -8,15 +8,12 @@ import Sidebar from "./components/sidebar/Sidebar";
 import Apple from "./pages/Apple";
 import Pineapple from "./pages/Pineapple";
 import Strawberry from "./pages/Strawberry";
-import Banana from "./pages/Banana";
-import Avocado from "./pages/Avocado";
-import Melon from "./pages/Melon";
-import Grapes from "./pages/Grapes";
 import Ivsi from "./pages/Ivsi";
 import Bindings from "./pages/Bindings";
 import { SearchContext } from "./context/SearchContext";
 import { UserProvider } from "./context/UserProvider";
 import Patterns from "./pages/Patterns";
+import { ClosedImage } from "./assets/icons";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -34,6 +31,15 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
+
+const ClosePage = () => {
+  return (
+    <div style={{ height: "80%", width: "100%", display: "flex", flexDirection:"column", justifyContent: "center", alignItems: "center" }}>
+      <p>This feature is not yet available</p>
+      <ClosedImage style={{ height: 400, margin: "0 auto" }} />
+    </div>
+  );
+};
 
 const queryClient = new QueryClient();
 
@@ -69,10 +75,10 @@ function App() {
                   <Route exact path="/" component={Apple} />
                   <Route path="/pineapple" component={Pineapple} />
                   <Route path="/strawberry" component={Strawberry} />
-                  <Route path="/banana" component={Banana} />
-                  <Route path="/avocado" component={Avocado} />
-                  <Route path="/melon" component={Melon} />
-                  <Route path="/grapes" component={Grapes} />
+                  <Route path="/banana" component={ClosePage} />
+                  <Route path="/avocado" component={ClosePage} />
+                  <Route path="/melon" component={ClosePage} />
+                  <Route path="/grapes" component={ClosePage} />
                   <Route path="/ivsi" component={Ivsi} />
                   <Route path="/bindings" component={Bindings} />
                   <Route path="/patterns" component={Patterns} />
