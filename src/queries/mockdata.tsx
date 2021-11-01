@@ -151,18 +151,18 @@ const patternCodes = [
   },
 ];
 
-const patterns = [
+
+const patterns: any[] = [
   {
     id: 1,
     name: "A.D.N GROUP KW",
     typeId: 4,
     formId: 2,
     countryId: 1,
-    uploadInfo: {
-      uploadedBy: "Carmelo Besid",
-      uploadDate: "08/20/2021 09:14 PM",
-    },
-    headers: [],
+    addedBy: 0,
+    addedDate: "08/20/2021",
+    updatedBy: 0,
+    updatedDate: "",
   },
   {
     id: 2,

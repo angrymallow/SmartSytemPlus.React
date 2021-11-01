@@ -18,7 +18,7 @@ import {
 } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab/";
 import { DeleteOutlined, EditOutlined } from "@material-ui/icons";
-import {useEffect, useState } from "react";
+import {useContext, useEffect, useState } from "react";
 import { colors } from "../../../themes/variables";
 import useHeaders from "../../../queries/useHeaders";
 import { Header } from "../../../types/interfaces/Header";
@@ -41,6 +41,7 @@ import {
   validateSheetName,
 } from "../../../helpers/binding-value-validation";
 import { PrimaryDetailsView } from "./PrimaryDetailsStep";
+import { LookupContext } from "../../../context";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -664,7 +665,7 @@ const initialPatternBindingState: PatternBindings = {
 };
 
 const SetupBindingStep = (props: any) => {
-  const { initialState, handleBack, handleNext, details, countries, types, forms } = props;
+  const { initialState, handleBack, handleNext, details } = props;
   const [detailsView, setDetailsView] = useState<any>({
     name: "",
     country: "",
@@ -681,12 +682,14 @@ const SetupBindingStep = (props: any) => {
 
   const classes = useStyles();
 
+  const lookup = useContext(LookupContext);
+
   useEffect(() => {
     setDetailsView({
       name: details.name,
-      country: countries?.find((country: any) => country.id === details.countryId)?.name,
-      form: forms?.find((form: any) => form.id === details.formId)?.name,
-      patternType: types?.find((type: any) => type.id === details.patternId)?.name,
+      country: lookup?.countries?.find((country: any) => country.id === details.countryId)?.name,
+      form: lookup?.forms?.find((form: any) => form.id === details.formId)?.name,
+      patternType: lookup?.types?.find((type: any) => type.id === details.patternId)?.name,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

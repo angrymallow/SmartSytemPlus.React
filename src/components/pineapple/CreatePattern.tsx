@@ -1,9 +1,5 @@
-import { Box, Breadcrumbs, Button, Container, Step, StepContent, StepLabel, Stepper, Typography } from "@material-ui/core";
-import { NavigateNextOutlined } from "@material-ui/icons";
-import { useEffect, useState } from "react";
-import useCountries from "../../queries/useCountries";
-import useIVSIForms from "../../queries/useForms";
-import usePattenTypes from "../../queries/usePatternTypes";
+import { Box, Button, Container, Step, StepContent, StepLabel, Stepper, Typography } from "@material-ui/core";
+import { useState } from "react";
 import { PatternBindings } from "../../types/interfaces/PatternBinding";
 import { PatternDetails } from "../../types/interfaces/PatternDetails";
 import { Link } from "react-router-dom";
@@ -11,26 +7,31 @@ import PrimaryDetailsStep from "./pattern/PrimaryDetailsStep";
 import SetupBindingStep from "./pattern/SetupBindingStep";
 import ReviewPatternStep from "./pattern/ReviewPatternStep";
 import { CompletedImage } from "../../assets/icons";
-
-const Nav = () => {
-  return (
-    <Breadcrumbs separator={<NavigateNextOutlined fontSize="small" />} aria-label="breadcrumb">
-      <Link color="primary" to="/patterns">
-        <Typography color="primary">Patterns</Typography>
-      </Link>
-      <Typography color="inherit">New</Typography>
-    </Breadcrumbs>
-  );
-};
+import { PageNavigation } from "../common";
+import { LookupContext } from "../../context";
+import { useLookup } from "../../queries/patterns";
+import { IPattern } from "../../types/interfaces";
 
 const steps = ["Primary Details", "Pattern Binding", "Review and Save"];
+const initialPatternState: IPattern = {
+  id: 0,
+  name: "",
+  formId: 0,
+  typeId: 0,
+  countryId: 0,
+  addedBy: 0,
+  addedDate: "",
+  updatedBy: 0,
+  updatedDate: "",
+  bindings: [],
+};
 
 const Content = () => {
-  const [pageLoading, setPageLoading] = useState<boolean>(true);
-  const { isLoading: countryLoading, data: countryData } = useCountries();
-  const { isLoading: formLoading, data: formData } = useIVSIForms();
-  const { isLoading: patternTypeLoading, data: patternTypeData } = usePattenTypes();
   const [activeStep, setActiveStep] = useState(0);
+  const [pattern, setPattern] = useState<IPattern>(initialPatternState);
+  const [submitting, setSubmitting] = useState<boolean>(false);
+  const [bindings, setBindings] = useState<PatternBindings[]>(new Array<PatternBindings>());
+
   const [details, setDetails] = useState<PatternDetails>({
     name: "",
     countryId: 0,
@@ -38,9 +39,40 @@ const Content = () => {
     patternId: 0,
   });
 
-  const [submitting, setSubmitting] = useState<boolean>(false);
+  const setPrimaryDetails = (countryId: number, name: string, typeId: number, formId: number) => {
+    setPattern({
+      ...pattern,
+      countryId,
+      typeId,
+      formId,
+      name,
+    });
+    
+    // Temporary
+    setDetails({
+      name,
+      countryId,
+      formId: formId,
+      patternId: typeId,
+    })
+    handleNext();
 
-  const [bindings, setBindings] = useState<PatternBindings[]>(new Array<PatternBindings>());
+    console.log("after set primary details", details);
+  };
+
+  // const setBindings2 = (bindings: IPatternBinding[]) => {
+  //   setPattern({
+  //     ...pattern,
+  //     bindings: [...bindings],
+  //   });
+  // };
+
+  // const setInnerCargo = (innerCargo: number) => {
+  //   setPattern({
+  //     ...pattern,
+  //     innerCargo,
+  //   });
+  // };
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -48,11 +80,6 @@ const Content = () => {
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleSaveDetails = (enteredDetails: PatternDetails) => {
-    handleNext();
-    setDetails(enteredDetails);
   };
 
   const handleSavePatternBindings = (patternBindings: PatternBindings[]) => {
@@ -68,14 +95,6 @@ const Content = () => {
     }, 3000);
   };
 
-  useEffect(() => {
-    setPageLoading(countryLoading && formLoading && patternTypeLoading);
-  }, [countryLoading, formLoading, patternTypeLoading]);
-
-  if (pageLoading) {
-    return <p>Loading...</p>;
-  }
-
   return (
     <Box marginTop={5}>
       <Typography variant="h4">Create Pattern</Typography>
@@ -89,32 +108,15 @@ const Content = () => {
                 </StepLabel>
                 <StepContent>
                   {activeStep === 0 ? (
-                    <PrimaryDetailsStep
-                      countries={countryData?.data?.countries}
-                      forms={formData?.forms}
-                      patternTypes={patternTypeData?.types}
-                      initialState={details}
-                      handleNext={handleSaveDetails}
-                    />
+                    <PrimaryDetailsStep initialState={{ ...pattern }} handleSubmit={setPrimaryDetails} />
                   ) : activeStep === 1 ? (
-                    <SetupBindingStep
-                      initialState={bindings}
-                      handleBack={handleBack}
-                      details={details}
-                      countries={countryData?.data?.countries}
-                      types={patternTypeData?.types}
-                      forms={formData?.forms}
-                      handleNext={handleSavePatternBindings}
-                    />
+                    <SetupBindingStep initialState={bindings} handleBack={handleBack} details={details} handleNext={handleSavePatternBindings} />
                   ) : (
                     <ReviewPatternStep
                       handleBack={handleBack}
                       handleSubmit={handleSubmitPattern}
                       details={details}
                       bindings={bindings}
-                      countries={countryData?.data?.countries}
-                      types={patternTypeData?.types}
-                      forms={formData?.forms}
                       innerLimit={15 - bindings.filter((binding) => binding.option.isSO).length}
                       submitting={submitting}
                     />
@@ -155,11 +157,25 @@ const Content = () => {
 };
 
 const CreatePattern = () => {
+  const { isLoading, data } = useLookup();
+
+  if (isLoading || !data) {
+    return <p>Loading...</p>;
+  }
+
   return (
-    <Container>
-      <Nav />
-      <Content />
-    </Container>
+    <LookupContext.Provider value={{ countries: data?.countries, forms: data?.forms, types: data?.types }}>
+      <Container>
+        <PageNavigation
+          links={{
+            to: "/patterns",
+            text: "Patterns",
+          }}
+          current="Create"
+        />
+        <Content />
+      </Container>
+    </LookupContext.Provider>
   );
 };
 

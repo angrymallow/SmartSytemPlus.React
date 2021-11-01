@@ -27,7 +27,6 @@ import { CheckCircleOutline, ErrorOutlineOutlined, FileCopyOutlined } from "@mat
 import { useCallback, useContext, useEffect, useState } from "react";
 import { SearchContext } from "../context/SearchContext";
 import { Link } from "react-router-dom";
-import useCountries from "../queries/useCountries";
 import { useQuery } from "react-query";
 import { getPatternByCountry, getPatternInfoById, processRawData } from "../queries/mockdata";
 import { useDropzone } from "react-dropzone";
@@ -35,6 +34,8 @@ import { colors } from "../themes/variables";
 import { ExcelIcon } from "../assets/icons/index";
 import { createTableDataFromObject } from "../helpers/grid-helpers";
 import { Autocomplete } from "@material-ui/lab";
+import { useCountriesWithPattern } from "../queries/patterns";
+import Description from "../components/description/Description";
 
 const useStyles = makeStyles((theme: Theme) => {
   return createStyles({
@@ -84,7 +85,7 @@ const useStyles = makeStyles((theme: Theme) => {
 
 const SelectCountry = (props: any) => {
   const { country, setCountry } = props;
-  const { isLoading: countryLoading, data: countryData } = useCountries();
+  const { isLoading: countryLoading, data: countries } = useCountriesWithPattern();
 
   if (countryLoading)
     return (
@@ -95,21 +96,24 @@ const SelectCountry = (props: any) => {
     );
 
   return (
-    <TextField
-      id="country"
-      style={{ width: "100%" }}
-      label="Country"
-      variant="filled"
-      value={country}
-      onChange={(e) => setCountry(+e.target.value)}
-      select
-    >
-      {countryData.data.countries.map((country: any) => (
-        <MenuItem key={country.id} value={country.id}>
-          {country.name}
-        </MenuItem>
-      ))}
-    </TextField>
+    <>
+      <TextField
+        id="country"
+        style={{ width: "100%" }}
+        label="Country"
+        variant="filled"
+        size="small"
+        value={country}
+        onChange={(e) => setCountry(+e.target.value)}
+        select
+      >
+        {countries?.map((country: any) => (
+          <MenuItem key={country.id} value={country.id}>
+            {country.name}
+          </MenuItem>
+        ))}
+      </TextField>
+    </>
   );
 };
 
@@ -141,6 +145,7 @@ const SelectPattern = (props: any) => {
   return (
     <Autocomplete
       fullWidth
+      size="small"
       options={patternData.patterns}
       value={selectedPattern}
       onChange={(e: any, value: any | null) => {
@@ -229,7 +234,7 @@ const SetupPineapple = (props: any) => {
 
   return (
     <>
-      <Typography className={classes.stepHeader} variant="h6">
+      <Typography className={classes.stepHeader} variant="h5">
         Setup Pineapple Pattern
       </Typography>
       <Box flexGrow="1" marginY={3} display="flex" alignItems="center" padding={1} className={classes.box}>
@@ -243,37 +248,48 @@ const SetupPineapple = (props: any) => {
           </Link>
         </Box>
       </Box>
-      <Box width="60%">
-        <Box component="form"></Box>
+      <Box width="100%">
+        <Description
+          description="Set Pineapple Uniform Name"
+          caption="Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque eligendi veniam iure et dignissimos voluptatem aliquam repudiandae odit ut, amet perspiciatis, fuga temporibus autem!"
+        />
         <TextField
           id="name"
-          label="Pineapple Uniform Name"
           variant="filled"
           helperText="Enter a descriptive name"
           autoComplete="off"
+          size="small"
           fullWidth
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
-        <Box display="flex" justifyContent="space-between" alignItems="flex-start" width="100%" marginTop="2ch">
-          <Box display="flex" alignItems="center" width="40%" height={75}>
-            {name.length > 0 ? <SelectCountry country={country} setCountry={setCountry} /> : null}
-          </Box>
+        {name.length > 0 && (
+          <Box marginTop="2ch">
+            <Description
+              description="Select Patttern"
+              caption="Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque eligendi veniam iure et dignissimos voluptatem aliquam repudiandae odit ut."
+            />
+            <Box display="flex" justifyContent="space-between" alignItems="flex-start" width="100%">
+              <Box display="flex" alignItems="center" width="40%" height={75}>
+                {name.length > 0 ? <SelectCountry country={country} setCountry={setCountry} /> : null}
+              </Box>
 
-          <Box display="flex" alignItems="center" width="55%" height={75}>
-            {country > 0 ? <SelectPattern country={country} pattern={pattern} setPattern={setPattern} /> : null}
-          </Box>
-        </Box>
-        {pattern > 0 ? (
-          patternDetailsLoading ? (
-            <Box>
-              <CircularProgress size={18} style={{ marginRight: 10 }} />
-              <span>Loading Pattern Details</span>
+              <Box display="flex" alignItems="center" width="55%" height={75}>
+                {country > 0 ? <SelectPattern country={country} pattern={pattern} setPattern={setPattern} /> : null}
+              </Box>
             </Box>
-          ) : (
-            <PatternInfo details={patternDetails.info} />
-          )
-        ) : null}
+            {pattern > 0 ? (
+              patternDetailsLoading ? (
+                <Box>
+                  <CircularProgress size={18} style={{ marginRight: 10 }} />
+                  <span>Loading Pattern Details</span>
+                </Box>
+              ) : (
+                <PatternInfo details={patternDetails.info} />
+              )
+            ) : null}
+          </Box>
+        )}
       </Box>
 
       <Button className={classes.stepAction} variant="contained" disabled={!canNext} color="primary" onClick={handlePatternDetailsSave}>
