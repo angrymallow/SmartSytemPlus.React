@@ -4,17 +4,18 @@ import { StrawberryImage } from "../assets/icons";
 import { AppContext, LookupContext } from "../context";
 import { useLookup } from "../queries/patterns";
 import { IPineappleUniform } from "../types/interfaces/IPineappleUniform";
-import PineappleDetails from "./components/strawberry/PineappleDetails";
 import SearchPineapple from "./components/strawberry/SearchPineapple";
 
 const Strawberry = () => {
   const { isLoading, data } = useLookup();
   const { maxRow, setMaxRow } = useContext(AppContext);
   const [pineapple, setPineapple] = useState<IPineappleUniform | null>(null);
-  const [initialDocumentId, setInitialDocumentId] = useState<string>("");
+  const [initialDocumentId ] = useState<string>("");
   const [documentType, setDocumentType] = useState<string>("");
 
-  const [componentKey, setComponentKey] = useState<number>(0);
+  const [componentKey] = useState<number>(0);
+
+  console.log(pineapple);
 
   if (isLoading || !data) {
     return <p>Strawberry Loading...</p>;
