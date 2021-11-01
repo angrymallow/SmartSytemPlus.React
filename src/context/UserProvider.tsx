@@ -19,6 +19,7 @@ const { Provider } = UserContext;
 const UserProvider = (props: any) => {
   const [user, setUser] = useState<User>(initialState);
 
+
   useEffect(() => {
    setTimeout(() => {
       setUser({

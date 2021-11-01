@@ -19,6 +19,7 @@ import { ReactComponent as EmptyHeaderImage } from './svg/EmptyHeader.svg';
 import { ReactComponent as SearchImage } from './svg/Search.svg';
 import { ReactComponent as CompletedImage } from './svg/Completed.svg';
 import { ReactComponent as ClosedImage } from './svg/Closed.svg';
+import { ReactComponent as StrawberryImage } from './svg/CheckingInvoice.svg';
 export { 
       AppleIcon, 
       PineappleIcon,  
@@ -41,4 +42,5 @@ export {
       SearchImage,
       CompletedImage,
       ClosedImage,
+      StrawberryImage
     } 

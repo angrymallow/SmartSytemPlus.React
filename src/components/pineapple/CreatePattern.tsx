@@ -47,8 +47,7 @@ const Content = () => {
       formId,
       name,
     });
-    handleNext();
-
+    
     // Temporary
     setDetails({
       name,
@@ -56,6 +55,7 @@ const Content = () => {
       formId: formId,
       patternId: typeId,
     })
+    handleNext();
 
     console.log("after set primary details", details);
   };
