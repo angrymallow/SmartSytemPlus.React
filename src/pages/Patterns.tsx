@@ -1,5 +1,5 @@
 import { Route, Switch, useRouteMatch } from "react-router-dom";
-import CreatePattern from "../components/pineapple/CreatePattern";
+import CreatePattern from "../components/pineapple/pattern/creation/CreatePattern";
 import {
   Box,
   Breadcrumbs,

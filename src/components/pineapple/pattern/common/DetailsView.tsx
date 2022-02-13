@@ -30,12 +30,12 @@ const patternViewInitialState: IPatternDto = {
   addedDate: "",
 }
 
-type PrimaryDetailsViewProps = {
+type PrimaryDetailsProps = {
   handleEdit: () => void,
   canEdit: boolean,
   pattern: IPattern,
 }
-const PrimaryDetailsView = (props: PrimaryDetailsViewProps) => {
+const PrimaryDetails = (props: PrimaryDetailsProps) => {
   const { canEdit, handleEdit, pattern } = props;
   const [details, setDetails] = useState<IPatternDto>(patternViewInitialState);
   const lookup = useContext(LookupContext);
@@ -58,8 +58,6 @@ const PrimaryDetailsView = (props: PrimaryDetailsViewProps) => {
   
   }, [lookup, pattern])
   return (
-    // <p>TODO: project Primary Details View and Continue working on binding refactor</p>
-    // TODO: 
     <Box className={classes.container}>
       <Box display="flex" alignItems="center">
         <Typography variant="h5" color="primary">
@@ -80,4 +78,4 @@ const PrimaryDetailsView = (props: PrimaryDetailsViewProps) => {
   );
 };
 
-export default PrimaryDetailsView
+export default PrimaryDetails

@@ -9,6 +9,7 @@ import { IHeader, TableHeader } from "../components/table/TableHeader";
 import { useGlobalStyles } from "../themes/global.styles";
 import { SizedButton } from "../custom/button/SizedButton";
 import { SearchContext } from "../context/SearchContext";
+import useIVSIForms, {useUpdateForms} from "../queries/useForms";
 
 const tableHeaders: IHeader[] = [
   {
@@ -37,12 +38,16 @@ const tableHeaders: IHeader[] = [
   }
 ] 
 interface IIvsi {
+  id: number,
   index: number,
   name: string,
   description: string,
-  uploadedBy: string,
-  uploadedDate: string,
-  isActive: boolean,
+  uploadInfo: {
+    uploadedBy: string,
+    uploadedDate: string,
+  }
+  status: string,
+  pendingSave: boolean,
 } 
 
 const initialState = {
@@ -110,15 +115,19 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-
 const initialIvsiState: IIvsi = {
+  id:0,
+  pendingSave: false,
   description: "",
   index: 0,
-  isActive: false,
+  status: "",
   name: "",
-  uploadedBy: "",
-  uploadedDate: "",
+  uploadInfo: {
+    uploadedBy: "",
+    uploadedDate: "",
+  }
 }
+
 
 const Ivsi = () => {
 
@@ -129,22 +138,34 @@ const Ivsi = () => {
   const [currentIvsi, setCurrentIvsi] = useState<IIvsi>(initialIvsiState); 
   const [description, setDescription] = useState<string>('');
   const {setSearchIsHidden} = useContext(SearchContext);
+  
+  const { isLoading, data: forms } = useIVSIForms();
+  const { mutate, isLoading: isSaving } = useUpdateForms();
 
   const classes = useStyles();
   const globalClasses = useGlobalStyles();
 
   useEffect(() => {
     setSearchIsHidden(true);
-    console.log('ivsi oninit')
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    const origState = {...initialState};
-    const ivsiNewList = [...origState.data];
-    setIvsiList([...ivsiNewList]);
-    
-  }, [])
+    if (!isLoading) {
+      let i = 0;
+      const ivsiForms = forms.map((form: any) => {
+        const result: IIvsi = {
+          ...form, 
+          index: i,
+          pendingSave: false,
+        }
+        i++;
+        return result;
+      });
+      console.log(ivsiForms, 'mapped forms');
+      setIvsiList(ivsiForms);
+    }
+  },[forms, isLoading])
+
 
 
   const Nav = () => {
@@ -160,17 +181,25 @@ const Ivsi = () => {
   }
 
   const handleChange = (index: number) => (e: any) => {
+
+    debugger;
     const newList = [...ivsiList];
     const ivsiData = newList[index];
 
-    ivsiData.isActive = !ivsiData.isActive;
-    
+    ivsiData.status = ivsiData.status === 'Active' ? 'Inactive' : 'Active';
+    ivsiData.pendingSave = true;
     newList[index] = ivsiData;
     setIvsiList(newList);
     setStatus('pendingsave');
   }
   
   const handleSave = () => {
+    const pendingSaveForms = ivsiList.filter((ivsi) => ivsi.pendingSave);
+
+    pendingSaveForms.forEach((pending) => {
+      mutate(pending);
+    });
+
     console.log('ivsi form saving...');
   }
 
@@ -186,7 +215,8 @@ const Ivsi = () => {
     setOpen(false);
     const list = [...ivsiList];
     const item = list[index];
-    item.description = description!;
+    item.description = description;
+    item.pendingSave = true;
     list[index] = item;
     setIvsiList(list);
     setStatus('pendingsave');
@@ -195,6 +225,10 @@ const Ivsi = () => {
   const handlePopoverClose = () => {
     setAnchorEl(null);
     setOpen(false);
+  }
+
+  if (isLoading) {
+    return <p>Loading Forms...</p>;
   }
 
   return (
@@ -218,7 +252,7 @@ const Ivsi = () => {
           <TextField id="description" fullWidth label="Description" multiline variant="outlined" value={description} onChange={(e) => setDescription(e.target.value)}/>
           <Box marginTop={2} display="flex" justifyContent="center"> 
             <SizedButton variant="outlined" color="primary" className={classes.action} onClick={() => setOpen(false)}>Cancel</SizedButton>
-            <SizedButton variant="contained" color="primary" className={classes.action} onClick={() => handleUpdateDescription(currentIvsi?.index, description)}>Update</SizedButton>
+            <SizedButton variant="contained" color="primary" className={classes.action} onClick={() => handleUpdateDescription(currentIvsi.index, description)}>Update</SizedButton>
           </Box>
         </Box>
       </Popover>
@@ -231,7 +265,7 @@ const Ivsi = () => {
             <TableHeader headers={tableHeaders}></TableHeader>
             <TableBody>
               {
-                ivsiList.map((data) => (
+                ivsiList.map((data: any) => (
                   <TableRow key={data.name}>
                     <TableCell component="th" scope="row">
                       <Typography>
@@ -247,16 +281,16 @@ const Ivsi = () => {
                       </Typography>
                     </TableCell>
                     <TableCell scope="row">
-                      <Typography>{data.uploadedBy}</Typography>
-                      <Typography variant="caption" className={classes.caption}>{data.uploadedDate}</Typography>
+                      <Typography>{data.uploadInfo.uploadedBy}</Typography>
+                      <Typography variant="caption" className={classes.caption}>{data.uploadInfo.uploadedDate}</Typography>
                     </TableCell> 
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center">
                         <Typography>
-                          {data.isActive ? 'Active' : 'Inactive'}
+                          {data.status}
                         </Typography>
                         <Switch
-                            checked={data.isActive}
+                            checked={data.status === 'Active'}
                             onChange={handleChange(data.index)}
                             color="primary"
                             name="checkedB"
@@ -279,7 +313,7 @@ const Ivsi = () => {
       {
         status === 'pendingsave' ? (
           <Box display="flex" justifyContent="center" height="100px" alignItems="center">
-            <SizedButton variant="contained" className={classes.action} color="primary" onCanPlayThrough={handleSave}>Save</SizedButton>
+            <SizedButton variant="contained" className={classes.action} color="primary" onClick={handleSave}>Save</SizedButton>
           </Box>
         ) : null
       }

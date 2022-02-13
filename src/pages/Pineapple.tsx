@@ -425,7 +425,6 @@ const ReviewAndCompleteStep = (props: any) => {
   useEffect(() => {
     if (!!data) {
       const result = createTableDataFromObject(data.data);
-      setPineapple(result);
     }
   }, [data]);
 
