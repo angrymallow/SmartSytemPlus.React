@@ -1,18 +1,17 @@
 import { Box, Button, Container, Step, StepContent, StepLabel, Stepper, Typography } from "@material-ui/core";
 import { useState } from "react";
-import { PatternBindings } from "../../types/interfaces/PatternBinding";
-import { PatternDetails } from "../../types/interfaces/PatternDetails";
+import { PatternBindings } from "../../../../types/interfaces/PatternBinding";
+import { PatternDetails } from "../../../../types/interfaces/PatternDetails";
 import { Link } from "react-router-dom";
-import PrimaryDetailsStep from "./pattern/PrimaryDetailsStep";
-import SetupBindingStep from "./pattern/SetupBindingStep";
-import ReviewPatternStep from "./pattern/ReviewPatternStep";
-import { CompletedImage } from "../../assets/icons";
-import { PageNavigation } from "../common";
-import { LookupContext } from "../../context";
-import { useLookup } from "../../queries/patterns";
-import { IPattern } from "../../types/interfaces";
+import SetPrimaryDetailsStep from "./steps/primary-details/SetPrimaryDetailsStep";
+import SetupBindingStep from "./steps/bindings/SetupBindingStep";
+import ReviewPatternStep from "./steps/complete/ReviewPatternStep";
+import { CompletedImage } from "../../../../assets/icons";
+import { PageNavigation } from "../../../common";
+import { LookupContext } from "../../../../context";
+import { useLookup } from "../../../../queries/patterns";
+import { IPattern } from "../../../../types/interfaces";
 
-const steps = ["Primary Details", "Pattern Binding", "Review and Save"];
 const initialPatternState: IPattern = {
   id: 0,
   name: "",
@@ -26,6 +25,7 @@ const initialPatternState: IPattern = {
   bindings: [],
 };
 
+const steps = ["Primary Details", "Pattern Binding", "Review and Save"];
 const Content = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [pattern, setPattern] = useState<IPattern>(initialPatternState);
@@ -59,20 +59,6 @@ const Content = () => {
 
     console.log("after set primary details", details);
   };
-
-  // const setBindings2 = (bindings: IPatternBinding[]) => {
-  //   setPattern({
-  //     ...pattern,
-  //     bindings: [...bindings],
-  //   });
-  // };
-
-  // const setInnerCargo = (innerCargo: number) => {
-  //   setPattern({
-  //     ...pattern,
-  //     innerCargo,
-  //   });
-  // };
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -108,7 +94,7 @@ const Content = () => {
                 </StepLabel>
                 <StepContent>
                   {activeStep === 0 ? (
-                    <PrimaryDetailsStep initialState={{ ...pattern }} handleSubmit={setPrimaryDetails} />
+                    <SetPrimaryDetailsStep initialState={{ ...pattern }} handleSubmit={setPrimaryDetails} />
                   ) : activeStep === 1 ? (
                     <SetupBindingStep initialState={bindings} handleBack={handleBack} details={details} handleNext={handleSavePatternBindings} />
                   ) : (
@@ -144,10 +130,6 @@ const Content = () => {
                 </Link>
               </Box>
               <CompletedImage />
-              {/* <Box width="70%">
-              </Box>
-              <Box width="30%">
-              </Box> */}
             </Box>
           </Container>
         )}

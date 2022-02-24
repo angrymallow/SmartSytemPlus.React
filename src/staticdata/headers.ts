@@ -1,3 +1,4 @@
+import { APIResponse } from "../types/interfaces/api/APIResponse";
 import { Header } from "../types/interfaces/Header";
 
 const headers: Header[] = [
@@ -207,5 +208,7 @@ const headers: Header[] = [
     occurence: 10,
   },
 ];
+
+
 
 export default headers;

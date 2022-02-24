@@ -19,29 +19,29 @@ import {
 import { Autocomplete } from "@material-ui/lab/";
 import { DeleteOutlined, EditOutlined } from "@material-ui/icons";
 import {useContext, useEffect, useState } from "react";
-import { colors } from "../../../themes/variables";
-import useHeaders from "../../../queries/useHeaders";
-import { Header } from "../../../types/interfaces/Header";
-import { ChangingValueOption, DefaultValueOption } from "../../../types/interfaces/HeaderValueOption";
-import { TrimLineValueEnum, TrimValueEnum } from "../../../types/enums/TrimValueEnum";
-import { PatternTypeEnum } from "../../../types/enums/PatternTypeEnum";
-import { BootstrapInput, StyledInputLabel } from "../../../custom/input";
-import { useParseEnum } from "../../../helpers/enum-helper";
-import { EmptyHeaderImage, SearchImage } from "../../../assets/icons";
-import { PatternBindings } from "../../../types/interfaces/PatternBinding";
-import { SetValueValidation } from "../../../types/type/SetValueValidation";
-import { useBindingSetValueValidation } from "../../../hooks";
-import { ValueTypeEnum } from "../../../types/enums/ValueTypeEnum";
-import { useValidation } from "../../../hooks/useValidation";
+import { colors } from "../../../../../../themes/variables";
+import { useHeaders } from "../../../../../../queries/patterns";
+import { Header } from "../../../../../../types/interfaces/Header";
+import { ChangingValueOption, DefaultValueOption } from "../../../../../../types/interfaces/HeaderValueOption";
+import { TrimLineValueEnum, TrimValueEnum } from "../../../../../../types/enums/TrimValueEnum";
+import { PatternTypeEnum } from "../../../../../../types/enums/PatternTypeEnum";
+import { BootstrapInput, StyledInputLabel } from "../../../../../../custom/input";
+import { useParseEnum } from "../../../../../../helpers/enum-helper";
+import { EmptyHeaderImage, SearchImage } from "../../../../../../assets/icons";
+import { PatternBindings } from "../../../../../../types/interfaces/PatternBinding";
+import { SetValueValidation } from "../../../../../../types/type/SetValueValidation";
+import { useBindingSetValueValidation } from "../../../../../../hooks";
+import { ValueTypeEnum } from "../../../../../../types/enums/ValueTypeEnum";
+import { useValidation } from "../../../../../../hooks/useValidation";
 import {
   validateDefaultValue,
   validateOffsetColumn,
   validateOffsetRow,
   validateSearchKeyword,
   validateSheetName,
-} from "../../../helpers/binding-value-validation";
-import { PrimaryDetailsView } from "./PrimaryDetailsStep";
-import { LookupContext } from "../../../context";
+} from "../../../../../../helpers/binding-value-validation";
+import { PrimaryDetailsView } from "../primary-details/SetPrimaryDetailsStep";
+import { LookupContext } from "../../../../../../context";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

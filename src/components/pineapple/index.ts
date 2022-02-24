@@ -1,3 +1,3 @@
-import CreatePattern from "./CreatePattern";
+import CreatePattern from "./pattern/creation/CreatePattern";
 
 export { CreatePattern };

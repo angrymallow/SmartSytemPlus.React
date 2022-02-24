@@ -99,7 +99,8 @@ const ActivitiesAndAnnouncements = () => {
         ) : (
           <>
             <Container>
-              <List className={classes.listContainer}>
+              <p>There is no recent activity</p>
+              {/* <List className={classes.listContainer}>
                 {data.data.activities.map((activity: any) => {
                   return (
                     <ListItem key={activity.name}>
@@ -122,10 +123,11 @@ const ActivitiesAndAnnouncements = () => {
                     />
                   </ListItem>
                 </Link>
-              </List>
+              </List> */}
             </Container>
             <Container>
-              <List className={classes.listContainer}>
+              <p>There is no recent announcement</p>
+              {/* <List className={classes.listContainer}>
                 {data.data.announcements.map((announcement: any) => {
                   return (
                     <ListItem key={announcement.activity}>
@@ -148,7 +150,7 @@ const ActivitiesAndAnnouncements = () => {
                     />
                   </ListItem>
                 </Link>
-              </List>
+              </List> */}
             </Container>
           </>
         )}

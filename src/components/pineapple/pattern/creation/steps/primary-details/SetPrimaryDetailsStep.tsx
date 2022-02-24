@@ -13,13 +13,13 @@ import {
   Typography,
 } from "@material-ui/core";
 import { useContext } from "react";
-import { BootstrapInput, StyledInputLabel } from "../../../custom/input";
+import { BootstrapInput, StyledInputLabel } from "../../../../../../custom/input";
 import { CheckCircleOutlined, EditOutlined, ErrorOutlineOutlined } from "@material-ui/icons";
-import LabeledText from "../../textdisplay/LabeledText";
-import { colors } from "../../../themes/variables";
-import { LookupContext } from "../../../context";
-import useDuplicatePatterns from "../../../queries/patterns/useDuplicatePatterns";
-import Description from "../../description/Description";
+import LabeledText from "../../../../../textdisplay/LabeledText";
+import { colors } from "../../../../../../themes/variables";
+import { LookupContext } from "../../../../../../context";
+import useDuplicatePatterns from "../../../../../../queries/patterns/useDuplicatePatterns";
+import Description from "../../../../../description/Description";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
@@ -93,7 +93,7 @@ const PatternDetailsSchema = Yup.object({
   type: Yup.number().required().min(1),
 });
 
-type PrimaryDetailsProps = {
+type SetPrimaryDetailsProps = {
   initialState: {
     countryId: number;
     name: string;
@@ -103,7 +103,7 @@ type PrimaryDetailsProps = {
   handleSubmit(countryId: number, name: string, formId: number, typeId: number): void;
 };
 
-const PrimaryDetailsStep = (props: PrimaryDetailsProps) => {
+const SetPrimaryDetailsStep = (props: SetPrimaryDetailsProps) => {
   const { initialState, handleSubmit } = props;
   const lookup = useContext(LookupContext);
   
@@ -119,10 +119,8 @@ const PrimaryDetailsStep = (props: PrimaryDetailsProps) => {
     onSubmit: (values) => {
       handleSubmit(values.country, values.name, values.form, values.type);
     },
-
   });
 
-  
   const { isLoading: isDuplicateChecking, data: dupResult } = useDuplicatePatterns(formik.values.name, formik.values.country);
   const classes = useStyles();
 
@@ -218,4 +216,4 @@ const PrimaryDetailsStep = (props: PrimaryDetailsProps) => {
 };
 
 export { PrimaryDetailsView };
-export default PrimaryDetailsStep;
+export default SetPrimaryDetailsStep;
