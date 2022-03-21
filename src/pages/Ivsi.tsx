@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
-import { Box, Breadcrumbs, IconButton, Popover, Switch, TextField } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { Box, Breadcrumbs, Button, IconButton, Popover, Switch, TextField } from "@material-ui/core";
+import { Link, useRouteMatch, Route, Switch as RouteSwitch } from "react-router-dom";
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Table, TableCell, TableContainer, TableRow, Toolbar, Typography, Paper, TableBody} from "@material-ui/core";
 import { NavigateNextOutlined, EditOutlined as EditIcon } from '@material-ui/icons';
@@ -9,7 +9,8 @@ import { IHeader, TableHeader } from "../components/table/TableHeader";
 import { useGlobalStyles } from "../themes/global.styles";
 import { SizedButton } from "../custom/button/SizedButton";
 import { SearchContext } from "../context/SearchContext";
-import useIVSIForms, {useUpdateForms} from "../queries/useForms";
+import useIVSIForms, { useForms, useUpdateForms } from "../queries/useForms";
+import AddIvsi from "./components/ivsi/Add";
 
 const tableHeaders: IHeader[] = [
   {
@@ -94,7 +95,8 @@ const useStyles = makeStyles((theme: Theme) =>
     table: { 
     },
     action: {
-      marginRight: '20px'
+      marginRight: '20px',
+      marginLeft: "20px",
     },
     root: {
       display: 'flex',
@@ -141,6 +143,9 @@ const Ivsi = () => {
   
   const { isLoading, data: forms } = useIVSIForms();
   const { mutate, isLoading: isSaving } = useUpdateForms();
+  const { isQuerying, downloadForm } = useForms();
+
+  let { path, url } = useRouteMatch();
 
   const classes = useStyles();
   const globalClasses = useGlobalStyles();
@@ -227,12 +232,24 @@ const Ivsi = () => {
     setOpen(false);
   }
 
+  const handleDownload = (id: number) => {
+    downloadForm(id);
+  }
+
+  const handleAdd = () => {
+    console.log('add is cliced');
+  }
+
   if (isLoading) {
     return <p>Loading Forms...</p>;
   }
 
   return (
     <>
+      <RouteSwitch>
+        <Route path={`${path}/add`} component={AddIvsi}>
+        </Route>
+      </RouteSwitch>
       <Nav/>
       <Popover
         id='popedit'
@@ -259,6 +276,9 @@ const Ivsi = () => {
       <Paper className={classes.dataContainer} elevation={0}>
         <Toolbar disableGutters>
           <Typography variant="h5">IVSI Forms</Typography>
+          <Link to={`${url}/add`}>
+            <Button variant="outlined" className={classes.action} color="primary" onClick={handleAdd}>New*</Button>
+          </Link>
         </Toolbar>
         <TableContainer className={globalClasses.table}>
           <Table>
@@ -271,9 +291,11 @@ const Ivsi = () => {
                       <Typography>
                          {data.name}
                       </Typography>
-                      <Link to="/ivsi">
-                        <Typography color="primary" className={globalClasses.link}>Download</Typography>
-                      </Link>
+                      {/* <Link to="/ivsi"> */}
+                        <Button onClick={() => handleDownload(data.id)}>
+                          <Typography color="primary" className={globalClasses.link}>Download</Typography>
+                        </Button>
+                      {/* </Link> */}
                     </TableCell>
                     <TableCell scope="row">
                       <Typography>
@@ -282,7 +304,7 @@ const Ivsi = () => {
                     </TableCell>
                     <TableCell scope="row">
                       <Typography>{data.uploadInfo.uploadedBy}</Typography>
-                      <Typography variant="caption" className={classes.caption}>{data.uploadInfo.uploadedDate}</Typography>
+                      <Typography variant="caption" className={classes.caption}>{new Date(data.uploadInfo.uploadedDate).toLocaleString()}</Typography>
                     </TableCell> 
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center">
@@ -310,13 +332,16 @@ const Ivsi = () => {
           </Table>
         </TableContainer>
       </Paper>
-      {
-        status === 'pendingsave' ? (
-          <Box display="flex" justifyContent="center" height="100px" alignItems="center">
-            <SizedButton variant="contained" className={classes.action} color="primary" onClick={handleSave}>Save</SizedButton>
-          </Box>
-        ) : null
-      }
+      <Box display="flex" justifyContent="center" height="100px" alignItems="center">
+   
+        {
+          status === 'pendingsave' ? (
+            // <Box display="flex" justifyContent="center" height="100px" alignItems="center">
+              <SizedButton variant="contained" className={classes.action} color="primary" onClick={handleSave}>Save</SizedButton>
+            // </Box>
+          ) : null
+        }
+      </Box>
     
     </>
   )
