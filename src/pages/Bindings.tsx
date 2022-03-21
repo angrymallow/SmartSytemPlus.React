@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Box, Breadcrumbs, IconButton, Popover} from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { Box, Breadcrumbs, Button, IconButton, Popover} from "@material-ui/core";
+import { Link, useRouteMatch } from "react-router-dom";
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Table, TableCell, TableContainer, TableRow, Toolbar, Typography, Paper, TableBody} from "@material-ui/core";
 import { NavigateNextOutlined, EditOutlined as EditIcon } from '@material-ui/icons';
@@ -9,6 +9,7 @@ import { IHeader, TableHeader } from "../components/table/TableHeader";
 import { useGlobalStyles } from "../themes/global.styles";
 import { SizedButton } from "../custom/button/SizedButton";
 import BindingDetails from "../components/forms/BindingDetails";
+import { useAddressBindings } from "../queries/useAddressBindings";
 
 const tableHeaders: IHeader[] = [
   {
@@ -48,6 +49,7 @@ const tableHeaders: IHeader[] = [
 ] 
 
 export interface IBindings {
+  id: number,
   index: number,
   shipper: string,
   address1: string,
@@ -55,12 +57,14 @@ export interface IBindings {
   address3: string,
   address4: string,
   address5: string,
+  pendingSave: boolean,
 } 
 
 const initialState = {
   status: 200,
   data:  [
   {
+    id: 1, 
     index: 0,
     shipper: 'AA JAPAN (PVT) LTD',
     address1: '1-28-21 HAYABUCHI TSUZUKI-KU YOKOHAMA-CITY',
@@ -136,15 +140,11 @@ const Bindings = () => {
   const [status, setStatus] = useState('unchange');
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [open, setOpen] = useState(false);
-  const [currentBinding, setCurrentBinding] = useState<IBindings>(); 
+  const [currentBinding, setCurrentBinding] = useState<any>(); 
 
   const classes = useStyles();
   const globalClasses = useGlobalStyles();
-
-  useEffect(() => {
-    setBindings([...initialState.data]);
-  }, [])
-
+  let { url } = useRouteMatch();
 
   const Nav = () => {
      return (
@@ -166,6 +166,7 @@ const Bindings = () => {
   }
 
   const handleUpdateCurrentBinding = (binding: IBindings) => {
+    binding.pendingSave = true;
     const bindingList = [...bindings];
     bindingList[binding.index] = binding;
   
@@ -178,6 +179,40 @@ const Bindings = () => {
     setAnchorEl(null);
     setOpen(false);
   }
+  
+  const { isLoading, addressBindings, updateAddressBinding } = useAddressBindings();
+
+  const handleSave = () => {
+
+    const pendingForSave = bindings.filter((binding) => binding.pendingSave);
+    if (pendingForSave) {
+      pendingForSave.forEach((forSave) => {
+        console.log('for save', forSave);
+        updateAddressBinding(forSave.id, forSave);
+      }
+    )
+  }}
+
+
+  if (isLoading || !addressBindings) {
+    <p>Loading...</p>
+  }
+
+  useEffect(() => {
+    if (!!addressBindings) {
+      let i = 0;
+      const bindings = addressBindings.map((binding: any) => {
+        const result: IBindings = {
+          ...binding, 
+          index: i,
+          pendingSave: false,
+        }
+        i++;
+        return result;
+      });
+      setBindings(bindings);
+    }
+  }, [addressBindings])
 
   return (
     <>
@@ -203,14 +238,18 @@ const Bindings = () => {
       <Paper className={classes.dataContainer} elevation={0}>
         <Toolbar disableGutters>
           <Typography variant="h5">Bindings</Typography>
+            <Link to={`${url}/add`}>
+            <Button variant="outlined" style={{marginLeft: "10px"}} color="primary">New*</Button>
+          </Link>
         </Toolbar>
         <TableContainer className={globalClasses.table}>
           <Table>
             <TableHeader headers={tableHeaders}></TableHeader>
             <TableBody>
               {
-                bindings.map((data: IBindings) => (
-                  <TableRow key={data.shipper}>
+                !bindings ? null :
+                bindings.map((data: any) => (
+                  <TableRow key={data.id}>
                     <TableCell component="th" scope="row" className={globalClasses.rowHead}>
                       <Typography>
                          {data.shipper}
@@ -256,7 +295,7 @@ const Bindings = () => {
       {
         status === 'pendingsave' ? (
           <Box display="flex" justifyContent="center" height="100px" alignItems="center">
-            <SizedButton variant="contained" className={classes.action} color="primary" >Save</SizedButton>
+            <SizedButton variant="contained" className={classes.action} color="primary" onClick={handleSave} >Save</SizedButton>
           </Box>
         ) : null
       }
