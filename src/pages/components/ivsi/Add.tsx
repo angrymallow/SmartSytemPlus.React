@@ -8,7 +8,6 @@ import DropZone from "../../../components/common/DropZone";
 import { SizedButton } from "../../../custom/button/SizedButton";
 import { useForms } from "../../../queries/useForms";
 import { useHistory } from "react-router-dom";
-import { ExcelIcon } from "../../../assets/icons";
 
 const Nav = () => {
     return (

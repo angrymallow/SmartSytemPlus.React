@@ -166,7 +166,6 @@ const Ivsi = () => {
         i++;
         return result;
       });
-      console.log(ivsiForms, 'mapped forms');
       setIvsiList(ivsiForms);
     }
   },[forms, isLoading])
