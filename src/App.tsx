@@ -15,6 +15,7 @@ import { UserProvider } from "./context/UserProvider";
 import Patterns from "./pages/Patterns";
 import { ClosedImage } from "./assets/icons";
 import { AppProvider } from "./context";
+import AddIvsi from "./pages/components/ivsi/Add";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -80,6 +81,7 @@ function App() {
                     <Route path="/avocado" component={ClosePage} />
                     <Route path="/melon" component={ClosePage} />
                     <Route path="/grapes" component={ClosePage} />
+                    <Route path="/ivsi/add" component={AddIvsi} />
                     <Route path="/ivsi" component={Ivsi} />
                     <Route path="/bindings" component={Bindings} />
                     <Route path="/patterns" component={Patterns} />
