@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 
 const initialState = {
+  id: 0,
   index: 0,
   shipper: '',
   address1: '',
@@ -33,6 +34,7 @@ const initialState = {
   address3: '',
   address4: '',
   address5: '',
+  pendingSave: false,
 }
 
 const BindingDetails = (props: any) => {

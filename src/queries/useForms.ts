@@ -1,43 +1,77 @@
 
+import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useMutation, useQueryClient } from "react-query";
+import { FormsService } from "../services";
 
-export default function useIVSIForms() {
-  return useQuery<any>('forms', () => fetch(
-    "https://localhost:7004/smartsystem/api/ivsiform").then((res) => res.json()),
-    {cacheTime: 0}
-  );
+const key = "forms";
+
+export default function useGetForms() {
+  return useQuery<any>(key, FormsService.getForms);
 }
 
 const useUpdateForms = () => {
   const queryClient = useQueryClient();
-  return useMutation((form) => {
-     return fetch('https://localhost:7004/smartsystem/api/ivsiform/' + form.id, 
-        { 
-          method: 'PUT', 
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ description: form.description, status: form.status })
-        })
-        .then(response => response.json())
-  }, {
+  return useMutation(
+    (form) => FormsService.updateForms(form.id, {description: form.description, status: form.status}), {
     onMutate: async (newForm: any) => {
-      await queryClient.cancelQueries("forms");
-      const previousData = queryClient.getQueryData<any>("forms");
+      await queryClient.cancelQueries(key);
+      const previousData = queryClient.getQueryData<any>(key);
 
       if (previousData) {
-        queryClient.setQueryData<any[]>("forms", [...previousData, { ...newForm }]);
+        queryClient.setQueryData<any[]>(key, [...previousData, { ...newForm }]);
       }
       return { previousData };
     },
     onError: (err, variables, context) => {
       if (context?.previousData) {
-        queryClient.setQueryData<any>("forms", context.previousData);
+        queryClient.setQueryData<any>(key, context.previousData);
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries("forms");
+      queryClient.invalidateQueries(key);
     },
   });
 }
 
-export { useUpdateForms }
+
+const useForms = () => {
+  const [ isQuerying, setIsQuerying ] = useState<boolean>(false);
+  const [ isAdded, setIsAdded ] = useState<boolean>(false);
+  
+  const { isLoading: isAdding, mutate: addFormMutate } = useMutation(
+    (form) => FormsService.addform(form), {
+    onSettled: () => {
+      setIsAdded(true);
+    }
+  });
+  
+  useEffect(() => {
+    setIsQuerying(isAdding);
+  }, [isAdding]);
+
+  const addForm = (formData: any) => {
+    addFormMutate(formData);
+  }
+  
+  const downloadForm = (id: number) =>  {
+    setIsQuerying(true);
+    FormsService.getFile(id).then((respFile) => {
+      FormsService.downloadForm(id).then((response) => {
+        let url = window.URL.createObjectURL(response.data);
+        let a = document.createElement('a');
+        a.href = url;
+        a.download = respFile.data.filename;
+        a.click();
+        setIsQuerying(true);
+      })
+    })
+  }
+
+  return { isQuerying, addForm, downloadForm, isAdded }
+
+
+}
+// Add one custom hooks for forms where we can add edit delete 
+
+export { useUpdateForms, useForms, }
