@@ -74,11 +74,11 @@ const AddIvsi = () => {
         </Box>
         <form onSubmit={ivsiForm.handleSubmit}>
           <Box component="div" marginBottom="25px">
-            <TextField id="name" fullWidth label="Name" variant="outlined" value={ivsiForm.values.name} onChange={ivsiForm.handleChange}/>
+            <TextField id="name" fullWidth label="Name" size="small" variant="outlined" helperText="Type a unique name that can be easily identified." value={ivsiForm.values.name} onChange={ivsiForm.handleChange}/>
             <Typography variant="caption" color="error">{ivsiForm.errors.name}</Typography>
           </Box>
           <Box component="div" marginBottom="25px">
-            <TextField id="description" fullWidth label="Description" multiline variant="outlined" value={ivsiForm.values.description} onChange={ivsiForm.handleChange}/>
+            <TextField id="description" size="medium" fullWidth label="Description" helperText="Describe the form, what or when it should be used." multiline variant="outlined" value={ivsiForm.values.description} onChange={ivsiForm.handleChange}/>
             <Typography variant="caption" color="error">{ivsiForm.errors.description}</Typography>
           </Box>
           <DropZone type="button" handleSelectFile={(file: any) => {ivsiForm.setFieldValue("file", file)}} file={ivsiForm.values.file}/>
