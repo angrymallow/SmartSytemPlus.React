@@ -1,5 +1,5 @@
 import { Box, Button, Container, Step, StepContent, StepLabel, Stepper, Typography } from "@material-ui/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PatternBindings } from "../../../../types/interfaces/PatternBinding";
 import { PatternDetails } from "../../../../types/interfaces/PatternDetails";
 import { Link } from "react-router-dom";
@@ -9,8 +9,9 @@ import ReviewPatternStep from "./steps/complete/ReviewPatternStep";
 import { CompletedImage } from "../../../../assets/icons";
 import { PageNavigation } from "../../../common";
 import { LookupContext } from "../../../../context";
-import { useLookup } from "../../../../queries/patterns";
+import { usePatterns } from "../../../../queries/patterns";
 import { IPattern } from "../../../../types/interfaces";
+import { PatternBindingsService } from "../../../../services/patterns-services";
 
 const initialPatternState: IPattern = {
   id: 0,
@@ -28,7 +29,7 @@ const initialPatternState: IPattern = {
 const steps = ["Primary Details", "Pattern Binding", "Review and Save"];
 const Content = () => {
   const [activeStep, setActiveStep] = useState(0);
-  const [pattern, setPattern] = useState<IPattern>(initialPatternState);
+  const [pattern, setPattern] = useState<any>(initialPatternState);
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [bindings, setBindings] = useState<PatternBindings[]>(new Array<PatternBindings>());
 
@@ -40,8 +41,9 @@ const Content = () => {
   });
 
   const setPrimaryDetails = (countryId: number, name: string, typeId: number, formId: number) => {
+
+    console.log(countryId, name, typeId, formId, "values of primary details on submit")
     setPattern({
-      ...pattern,
       countryId,
       typeId,
       formId,
@@ -55,9 +57,8 @@ const Content = () => {
       formId: formId,
       patternId: typeId,
     })
-    handleNext();
 
-    console.log("after set primary details", details);
+    handleNext();
   };
 
   const handleNext = () => {
@@ -75,11 +76,55 @@ const Content = () => {
 
   const handleSubmitPattern = () => {
     setSubmitting(true);
-    setTimeout(() => {
+    const postData = {
+      patternName: details.name,
+      countryId: details.countryId,
+      ivsiFormId: details.formId,
+      patternTypeId: details.patternId,
+      patternValues: bindings.map((binding) => {
+        const bindingPostData = {
+          headerId: binding.headerId,
+          setValueType: binding.option.valueType,
+          fixValue: binding.option.valueType === 1 ? binding.option.defaultValue : "",
+          isSOHeader: binding.option.isSO,
+          trim: binding.option.trim,
+          prefix: binding.option.prefix,
+          isBind: false,
+          keyword: "",
+          sheetName: "",
+          colOffset: 0,
+          rowOffset: 0,
+        }
+
+        if (binding.option.valueType === 2) {
+          const changingValue = binding.option.changingValue;
+          bindingPostData.isBind = false;
+          bindingPostData.keyword = changingValue.searchKeyword;
+          bindingPostData.sheetName = changingValue.findSheet;
+          bindingPostData.colOffset = changingValue.offset.column;
+          bindingPostData.rowOffset = changingValue.offset.row;
+        };
+
+        return bindingPostData;
+      })
+    };
+
+    console.log(postData); 
+    PatternBindingsService.addBinding(postData).then((resp) => {
       setSubmitting(false);
       handleNext();
-    }, 3000);
+    })
+   
   };
+
+  useEffect(() => {
+    console.log("details changed", details);
+  }, [details])
+
+  useEffect(() => {
+    console.log('on load');
+  }, []);
+
 
   return (
     <Box marginTop={5}>
@@ -139,14 +184,14 @@ const Content = () => {
 };
 
 const CreatePattern = () => {
-  const { isLoading, data } = useLookup();
+  const { lookup } = usePatterns();
 
-  if (isLoading || !data) {
+  if (lookup.loading || !lookup.data) {
     return <p>Loading...</p>;
   }
 
   return (
-    <LookupContext.Provider value={{ countries: data?.countries, forms: data?.forms, types: data?.types }}>
+    <LookupContext.Provider value={lookup.data}>
       <Container>
         <PageNavigation
           links={{

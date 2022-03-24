@@ -21,7 +21,7 @@ import {
 import { PatternImage } from "../assets/icons";
 import { Link } from "react-router-dom";
 import { NavigateNextOutlined } from "@material-ui/icons";
-import { usePatterns } from "../queries/patterns";
+import { usePatternss } from "../queries/patterns/usePatterns";
 
 const useStyles = makeStyles((theme: Theme) => {
   return createStyles({
@@ -45,7 +45,7 @@ const Nav = () => {
 const headings = ["Pattern Name", "Country", "IVSI Form Type", "Pattern Type", "Upload Info"];
 
 export function PatternGrid() {
-  const { isLoading, data: patterns, isError } = usePatterns();
+  const { isLoading, data: patterns, isError } = usePatternss();
 
   if (isLoading) {
     <p>Table is Loading...</p>;

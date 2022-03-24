@@ -12,7 +12,7 @@ import {
   Theme,
   Typography,
 } from "@material-ui/core";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { BootstrapInput, StyledInputLabel } from "../../../../../../custom/input";
 import { CheckCircleOutlined, EditOutlined, ErrorOutlineOutlined } from "@material-ui/icons";
 import LabeledText from "../../../../../textdisplay/LabeledText";
@@ -22,6 +22,7 @@ import useDuplicatePatterns from "../../../../../../queries/patterns/useDuplicat
 import Description from "../../../../../description/Description";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { usePatterns } from "../../../../../../queries/patterns";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -78,7 +79,7 @@ const PrimaryDetailsView = (props: any) => {
 
 type DuplicateAdornmentProps = {
   loading: boolean;
-  duplicate: boolean;
+  duplicate: boolean | undefined;
 };
 
 const DuplicateAdornment = (props: DuplicateAdornmentProps) => {
@@ -117,12 +118,19 @@ const SetPrimaryDetailsStep = (props: SetPrimaryDetailsProps) => {
     validationSchema: PatternDetailsSchema,
     validateOnMount: true, 
     onSubmit: (values) => {
-      handleSubmit(values.country, values.name, values.form, values.type);
+      handleSubmit(values.country, values.name, values.type,  values.form);
     },
   });
 
-  const { isLoading: isDuplicateChecking, data: dupResult } = useDuplicatePatterns(formik.values.name, formik.values.country);
+  const { duplicate } = usePatterns();
   const classes = useStyles();
+
+  useEffect(() => {
+
+    if (formik.values.name.length > 0 && formik.values.country > 0) 
+      duplicate.checkDuplicate(formik.values.name, formik.values.country);
+      
+  }, [formik.values.name, formik.values.country]);
 
   return (
     <Box marginTop={5} maxWidth="70%">
@@ -159,11 +167,11 @@ const SetPrimaryDetailsStep = (props: SetPrimaryDetailsProps) => {
             name="name"
             fullWidth
             placeholder="Enter Pattern Name"
-            endAdornment={formik.values.name.length > 0 && formik.values.country > 0 && <DuplicateAdornment loading={isDuplicateChecking} duplicate={dupResult?.isDuplicate} />}
+            endAdornment={formik.values.name.length > 0 && formik.values.country > 0 && <DuplicateAdornment loading={duplicate.loading} duplicate={duplicate.data?.isDuplicate} />}
             value={formik.values.name}
             onChange={formik.handleChange}
           />
-          {dupResult?.isDuplicate && !isDuplicateChecking ? (
+          {duplicate?.data?.isDuplicate && !duplicate.loading ? (
             <Typography variant="caption" color="error">
               Pattern name is already used, edit instead?
             </Typography>
@@ -202,12 +210,12 @@ const SetPrimaryDetailsStep = (props: SetPrimaryDetailsProps) => {
           >
             {lookup?.types?.map((type: any) => (
               <MenuItem key={type.id} value={type.id}>
-                {`${type.name} (${type.code})`}
+                {`${type.name}`}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
-        <Button variant="contained" color="primary" disabled={!formik.isValid || dupResult?.isDuplicate || isDuplicateChecking} onClick={() => formik.handleSubmit()}>
+        <Button variant="contained" color="primary" disabled={!formik.isValid || duplicate?.data?.isDuplicate || duplicate.loading} onClick={() => formik.handleSubmit()}>
           Next
         </Button>
       </Box>
