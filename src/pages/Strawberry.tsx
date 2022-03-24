@@ -7,7 +7,7 @@ import { IPineappleUniform } from "../types/interfaces/IPineappleUniform";
 import SearchPineapple from "./components/strawberry/SearchPineapple";
 
 const Strawberry = () => {
-  const { isLoading, data } = useLookup();
+  // const { isLoading, data } = useLookup();
   const { maxRow, setMaxRow } = useContext(AppContext);
   const [pineapple, setPineapple] = useState<IPineappleUniform | null>(null);
   const [initialDocumentId ] = useState<string>("");
@@ -17,9 +17,9 @@ const Strawberry = () => {
 
   console.log(pineapple);
 
-  if (isLoading || !data) {
-    return <p>Strawberry Loading...</p>;
-  }
+  // if (isLoading || !data) {
+  //   return <p>Strawberry Loading...</p>;
+  // }
 
   const handleSelectDocumentType = (e: any) => {
     console.log(e.target.value, "selected doc type")
@@ -27,7 +27,7 @@ const Strawberry = () => {
   }
 
   return (
-    <LookupContext.Provider value={{ countries: data?.countries, forms: data?.forms, types: data?.types }}>
+    // <LookupContext.Provider value={{ countries: data?.countries, forms: data?.forms, types: data?.types }}>
       <Container>
         <Typography variant="h4">Strawberry Uniform</Typography>
         <Box display="flex" alignItems="center">
@@ -66,7 +66,7 @@ const Strawberry = () => {
           </Box>
         </Box>
       </Container>
-    </LookupContext.Provider>
+    // </LookupContext.Provider>
   );
 };
 

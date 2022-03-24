@@ -20,7 +20,7 @@ import { Autocomplete } from "@material-ui/lab/";
 import { DeleteOutlined, EditOutlined } from "@material-ui/icons";
 import {useContext, useEffect, useState } from "react";
 import { colors } from "../../../../../../themes/variables";
-import { useHeaders } from "../../../../../../queries/patterns";
+import { useHeaders, usePatterns } from "../../../../../../queries/patterns";
 import { Header } from "../../../../../../types/interfaces/Header";
 import { ChangingValueOption, DefaultValueOption } from "../../../../../../types/interfaces/HeaderValueOption";
 import { TrimLineValueEnum, TrimValueEnum } from "../../../../../../types/enums/TrimValueEnum";
@@ -678,21 +678,34 @@ const SetupBindingStep = (props: any) => {
   const [activeBindingTransaction, setActiveBindingTransaction] = useState<"add" | "update">("add");
   const [componentKey, setComponentKey] = useState<number>(0);
   const [headers, setHeaders] = useState<Header[]>(new Array<Header>());
-  const { isLoading: headersLoading, data: headerData } = useHeaders();
-
-  const classes = useStyles();
-
+  const [headerData, setHeaderData] = useState<any>();
+  // const { isLoading: headersLoading, data: headerData } = useHeaders();
+  
   const lookup = useContext(LookupContext);
+  const classes = useStyles();
+  const { headersLookup} = usePatterns();
 
   useEffect(() => {
-    setDetailsView({
+    headersLookup.getHeaders();
+  }, []);
+
+  useEffect(() => {
+    if (!!headersLookup.data) {
+      setHeaderData({headers: headersLookup.data});
+    }
+  }, [headersLookup])
+
+  useEffect(() => {
+
+    const lookupValues = {
       name: details.name,
       country: lookup?.countries?.find((country: any) => country.id === details.countryId)?.name,
       form: lookup?.forms?.find((form: any) => form.id === details.formId)?.name,
       patternType: lookup?.types?.find((type: any) => type.id === details.patternId)?.name,
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    }
+    setDetailsView(lookupValues);
+
+  }, [details, lookup?.countries, lookup?.forms, lookup?.types]);
 
   useEffect(() => {
     console.log("initial state", initialState);
@@ -777,7 +790,7 @@ const SetupBindingStep = (props: any) => {
         <Box marginTop={5} width="70%">
           <PrimaryDetailsView handleEdit={handleBack} details={detailsView} canEdit={true} />
           <Box marginTop={5}>
-            {headersLoading ? (
+            {headersLookup.loading ? (
               <p>Loading list of headers...</p>
             ) : (
               <PatternBinding
