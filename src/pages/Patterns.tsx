@@ -21,7 +21,8 @@ import {
 import { PatternImage } from "../assets/icons";
 import { Link } from "react-router-dom";
 import { NavigateNextOutlined } from "@material-ui/icons";
-import { usePatternss } from "../queries/patterns/usePatterns";
+import { usePatterns } from "../queries/patterns";
+import moment from "moment";
 
 const useStyles = makeStyles((theme: Theme) => {
   return createStyles({
@@ -45,15 +46,12 @@ const Nav = () => {
 const headings = ["Pattern Name", "Country", "IVSI Form Type", "Pattern Type", "Upload Info"];
 
 export function PatternGrid() {
-  const { isLoading, data: patterns, isError } = usePatternss();
+  const { isLoading, patterns } = usePatterns({loadList: true});
 
   if (isLoading) {
     <p>Table is Loading...</p>;
   }
 
-  if (isError) {
-    <p>Error in loading table, please try again...</p>
-  }
   return (
     <div>
       <Paper elevation={0}>
@@ -93,14 +91,14 @@ export function PatternGrid() {
                     <Typography>{pattern.country}</Typography>
                   </TableCell>
                   <TableCell>
-                    <Typography>{pattern.formType}</Typography>
+                    <Typography>{pattern.ivsiForm}</Typography>
                   </TableCell>
                   <TableCell>
                     <Typography>{pattern.patternType}</Typography>
                   </TableCell>
                   <TableCell>
-                    <Typography>{pattern.addedBy}</Typography>
-                    <Typography variant="caption">{pattern.addedDate}</Typography>
+                    <Typography>{pattern.uploadInfo.fullName}</Typography>
+                    <Typography variant="caption">{moment(new Date(pattern.uploadInfo.stamp)).format("MM/DD/YYYY hh:mm a")}</Typography>
                   </TableCell>
                 </TableRow>
               ))}

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { PatternBindingsService } from "../../services/patterns-services";
 import { getPatternsAsync } from "../../staticdata/patterns";
+import { IPatternDto, IPatternPostData } from "../../types/interfaces";
 import IPatternLookup from "../../types/interfaces/IPatternLookup";
 
 const key = 'patterns';
@@ -14,9 +15,16 @@ const usePatternss = () => useQuery("patterns", async () => {
   return result.data;
 });
 
-const usePatterns = () => {
+const usePatterns = (option: {loadList: boolean} = {loadList: false}) => {
 
   const [ loadHeaders, setLoadHeaders ] = useState<boolean>();
+  
+  const { isLoading, data: patterns, } = useQuery<IPatternDto[]>(key, () => 
+                PatternBindingsService.getAll(), { 
+                  enabled: option.loadList,
+                  cacheTime: 0,
+                });
+  
 
   const { isLoading: isLookupLoading, data: lookup, } = useQuery<IPatternLookup>(`${key}-lookup`, () => 
                 PatternBindingsService.getLookup(), { 
@@ -26,6 +34,14 @@ const usePatterns = () => {
   const { isLoading: isDuplicateChecking, mutate: checkDuplicateMutate, data: isDuplicate } = useMutation(
     (payload) => PatternBindingsService.getDuplicates(payload.name,  payload.country), {
       onMutate: (payload: any) => {
+        console.log("send payload", payload);
+      },
+    }
+  );
+
+  const { isLoading: isAdding, mutate: addMutate, isSuccess: isAdded } = useMutation(
+    (payload) => PatternBindingsService.add(payload), {
+      onMutate: (payload: IPatternPostData) => {
         console.log("send payload", payload);
       },
     }
@@ -47,6 +63,10 @@ const usePatterns = () => {
     setLoadHeaders(true);
   }
 
+  const add = (pattern: IPatternPostData) => {
+    addMutate(pattern);
+  }
+
   useEffect(() => {
     if (isHeadersFetching === false && !!headers) {
       console.log("header is fetched setting to false", headers);
@@ -55,6 +75,11 @@ const usePatterns = () => {
   }, [isHeadersFetching, headers])
 
   return {  
+    isLoading,
+    patterns,
+    add,
+    isAdding,
+    isAdded,
     lookup: {
       loading: isLookupLoading,
       data: lookup,

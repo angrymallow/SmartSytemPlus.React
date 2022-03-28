@@ -23,11 +23,13 @@ const useStyles = makeStyles((theme: Theme) =>
 const patternViewInitialState: IPatternDto = {
   id: 0,
   country: "",
-  formType: "",
+  ivsiForm: "",
   patternName: "",
   patternType: "",
-  addedBy: "",
-  addedDate: "",
+  uploadInfo: {
+    fullName: "",
+    stamp: "",
+  }
 }
 
 type PrimaryDetailsProps = {
@@ -49,10 +51,12 @@ const PrimaryDetails = (props: PrimaryDetailsProps) => {
     setDetails({
       patternName: pattern.name,
       country: !!country ? country : "",
-      formType: !!formType ? formType: "",
+      ivsiForm: "",
       patternType: !!patternType ? patternType: "",
-      addedBy: "",
-      addedDate: "",
+      uploadInfo: {
+        fullName: "",
+        stamp: "",
+      },
       id: 0,
     })
   
@@ -71,7 +75,7 @@ const PrimaryDetails = (props: PrimaryDetailsProps) => {
       </Box>
       <Box display="flex" width="100%" justifyContent="space-between">
         <LabeledText label="Country" text={details.country} />
-        <LabeledText label="IVSI Form" text={details.formType} />
+        <LabeledText label="IVSI Form" text={details.ivsiForm} />
         <LabeledText label="Pattern Type" text={details.patternType} />
       </Box>
    </Box>
