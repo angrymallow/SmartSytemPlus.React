@@ -10,7 +10,7 @@ import { CompletedImage } from "../../../../assets/icons";
 import { PageNavigation } from "../../../common";
 import { LookupContext } from "../../../../context";
 import { usePatterns } from "../../../../queries/patterns";
-import { IPattern } from "../../../../types/interfaces";
+import { IPattern, IPatternPostData } from "../../../../types/interfaces";
 import { PatternBindingsService } from "../../../../services/patterns-services";
 
 const initialPatternState: IPattern = {
@@ -30,9 +30,7 @@ const steps = ["Primary Details", "Pattern Binding", "Review and Save"];
 const Content = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [pattern, setPattern] = useState<any>(initialPatternState);
-  const [submitting, setSubmitting] = useState<boolean>(false);
   const [bindings, setBindings] = useState<PatternBindings[]>(new Array<PatternBindings>());
-
   const [details, setDetails] = useState<PatternDetails>({
     name: "",
     countryId: 0,
@@ -40,6 +38,7 @@ const Content = () => {
     patternId: 0,
   });
 
+  const { add, isAdding: submitting, isAdded } = usePatterns();
   const setPrimaryDetails = (countryId: number, name: string, typeId: number, formId: number) => {
 
     console.log(countryId, name, typeId, formId, "values of primary details on submit")
@@ -75,8 +74,7 @@ const Content = () => {
   };
 
   const handleSubmitPattern = () => {
-    setSubmitting(true);
-    const postData = {
+    const postData: IPatternPostData = {
       patternName: details.name,
       countryId: details.countryId,
       ivsiFormId: details.formId,
@@ -85,7 +83,7 @@ const Content = () => {
         const bindingPostData = {
           headerId: binding.headerId,
           setValueType: binding.option.valueType,
-          fixValue: binding.option.valueType === 1 ? binding.option.defaultValue : "",
+          fixValue: binding.option.valueType === 1 ? binding.option.defaultValue.value : "",
           isSOHeader: binding.option.isSO,
           trim: binding.option.trim,
           prefix: binding.option.prefix,
@@ -110,10 +108,7 @@ const Content = () => {
     };
 
     console.log(postData); 
-    PatternBindingsService.addBinding(postData).then((resp) => {
-      setSubmitting(false);
-      handleNext();
-    })
+    add(postData);
    
   };
 
@@ -125,6 +120,12 @@ const Content = () => {
     console.log('on load');
   }, []);
 
+
+  useEffect(() => {
+    if (!submitting && isAdded) {
+      handleNext();
+    }
+  }, [isAdded, submitting])
 
   return (
     <Box marginTop={5}>

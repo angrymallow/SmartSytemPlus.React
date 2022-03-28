@@ -13,11 +13,13 @@ type PineappleDetailsType = {
 const patternViewInitialState: IPatternDto = {
   id: 0,
   country: "",
-  formType: "",
+  ivsiForm: "",
   patternName: "",
   patternType: "",
-  addedBy: "",
-  addedDate: "",
+  uploadInfo: {
+    fullName: "",
+    stamp: "",
+  }
 };
 const PineappleDetails = (props: PineappleDetailsType) => {
   const { name, pattern, handleRemove } = props;
@@ -32,10 +34,12 @@ const PineappleDetails = (props: PineappleDetailsType) => {
     setDetails({
       patternName: pattern.name,
       country: !!country ? country : "",
-      formType: !!formType ? formType : "",
+      ivsiForm: "",
       patternType: !!patternType ? patternType : "",
-      addedBy: "",
-      addedDate: "",
+      uploadInfo: {
+        fullName: "",
+        stamp: "",
+      },
       id: 0,
     });
   }, [lookup, pattern]);
@@ -58,7 +62,7 @@ const PineappleDetails = (props: PineappleDetailsType) => {
       <Box display="flex" width="100%" justifyContent="space-between">
         <LabeledText label="Country" text={details.country} />
         <LabeledText label="Pattern Name" text={details.patternName} />
-        <LabeledText label="IVSI Form" text={details.formType} />
+        <LabeledText label="IVSI Form" text={details.ivsiForm} />
         <LabeledText label="Pattern Type" text={details.patternType} />
       </Box>
     </Box>

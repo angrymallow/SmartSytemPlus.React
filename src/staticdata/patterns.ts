@@ -403,10 +403,12 @@ const getPatternsAsync = async (): Promise<APIResponse<IPatternDto[]>> => {
         id: pattern.id,
         patternName: pattern.name,
         country: countries.find((country) => country.id === pattern.countryId)?.name,
-        formType: forms.find((form) => form.id === pattern.formId)?.name,
+        ivsiForm: forms.find((form) => form.id === pattern.formId)?.name,
         patternType: patternTypes.find((patternType) => patternType.id === pattern.typeId)?.name,
-        addedBy: "Bryan Alvarez",
-        addedDate: "10/22/2021"
+        uploadInfo: {
+          fullName: "Bryan Alvarez",
+          stamp: "10/22/2021"
+        }
       } as IPatternDto));
 
       resolve({ success: true, data: result });
