@@ -9,16 +9,31 @@ import {
   List,
   ListItem,
   CircularProgress,
+  Paper,
+  Button,
+  TableContainer,
+  TableCell,
+  TableRow,
+  TableHead,
+  Toolbar,
+  TableBody,
+  Table,
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import { DayIcon } from "../assets/icons";
 import { StyledButton } from "../custom/button/StyledButton";
 import { colors } from "../themes/variables";
-import { useContext, useEffect } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { SearchContext } from "../context/SearchContext";
 import useLogs from "../queries/useLogs";
 import { getAvatar } from "../helpers/avatar-helpers";
 import { UserContext } from "../context/UserProvider";
+import { useDropzone } from "react-dropzone";
+import * as XLSX from "xlsx";
+import { TKun, useImportTkun } from "../hooks/tkun/useImportTkun";
+import { SizedButton } from "../custom/button/SizedButton";
+import useTkun from "../queries/tkun/useTkun";
+import { TetsudaiKunList } from "./TetsudaiKun";
 
 const useStyles = makeStyles((theme: Theme) => {
   return createStyles({
@@ -50,6 +65,9 @@ const useStyles = makeStyles((theme: Theme) => {
     setupButton: {
       width: "250px",
     },
+    dragActive: {
+      backgroundColor: colors.black36,
+    }
   });
 });
 
@@ -194,16 +212,63 @@ const SetupLinks = () => {
             </StyledButton>
           </Link>
         </Box>
+        <Box marginY={3}>
+          <Link to="/tkun">
+            <StyledButton variant="contained" color="primary">
+              Tetsudai Kun List
+            </StyledButton>
+          </Link>
+        </Box>
       </Container>
     </Container>
   );
 };
 
+type TetsudaiKunProps = {
+  data: TKun[],
+  handleBack: Function,
+}
+const TetsudaiKunUpload = (props: TetsudaiKunProps) => {
+  
+  const { data, handleBack } = props;
+
+  const { isUploaded, isUploading, upload } = useTkun({load: false});
+  
+  return (
+    <>
+      <TetsudaiKunList data={data} toolbarHeaderText={isUploaded ? "T-Kun Uploaded Succesfully!" : "Upload T-Kun"} />
+      {
+        isUploading ? (<span>Uploading T-Kun...</span>) : 
+        <Box component="div" display="flex" marginTop="30px" justifyContent="center">
+          <SizedButton variant="outlined" color="primary" style={{marginRight: '20px'}} onClick={() => { handleBack()}}>Back</SizedButton>
+          {
+            !isUploaded && 
+            <SizedButton variant="contained" color="primary" onClick={() => upload(data)}>Upload</SizedButton>
+          }
+        </Box>
+      }
+    </>
+  )
+}
+
 const Apple = () => {
   const { setSearch, setSearchIsHidden, setSearchPlaceholder } =
     useContext(SearchContext);
 
+  const [tKunUploaded, setTKunUploaded] = useState<boolean>(false);
+  const { percentage, tkunData, doImport, success, failed, importing } = useImportTkun();
   const { user } = useContext<any>(UserContext);
+
+  const onDrop = useCallback((acceptedFiles: any) => {
+    doImport(acceptedFiles[0]);
+  }, []);
+  
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    noClick: true,
+    onDrop,
+    accept: ".csv",
+    maxFiles: 1,
+  });
 
   useEffect(() => {
     setSearchPlaceholder("Search T-kun...");
@@ -212,11 +277,31 @@ const Apple = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() =>  {
+    setTKunUploaded(success);
+  }, [success]);
+
+  const handlecancelTkunUpload = () => {
+    setTKunUploaded(false);
+  }
   return (
     <>
-      <Greetings name={user.fullName.split(" ")[0]} />
-      <ActivitiesAndAnnouncements />
-      <SetupLinks />
+    {
+      tKunUploaded && !importing ? <TetsudaiKunUpload data={tkunData} handleBack={handlecancelTkunUpload}/> : (
+      <div {...getRootProps()} style={{ width: "100%", height: "100%" }} className={isDragActive ? "dragActive": ""}>
+        <input {...getInputProps()}></input>
+        {
+          importing && (
+            <h1>Uploading T-Kun {percentage} %</h1>
+          )
+        }
+        <Greetings name={user.fullName.split(" ")[0]} />
+        <ActivitiesAndAnnouncements />
+        <SetupLinks />
+      </div>
+      )
+    }
+     
     </>
   );
 };
