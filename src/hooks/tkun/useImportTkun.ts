@@ -54,7 +54,7 @@ const useImportTkun = () => {
           const data = XLSX.utils.sheet_to_json(ws, { header: 1,  });
           const roWcount = data.length - 1;
           const tkun = data.filter((t, i) => i > 0).map((t: any, index: number) => {
-            setPercentage(((index + 1)/roWcount).toFixed(2));
+            setPercentage((((index + 1)/roWcount) * 100).toString());
             const result: TKun = {
               id: 0,
               chassis: t[0]?.toString(),

@@ -50,6 +50,9 @@ const TetsudaiKunList = (props: TetsudaiKunProps) => {
                 return (
                   <TableRow key={data.chassis}>
                     <TableCell>
+                      <Typography>{data.chassis}</Typography>
+                    </TableCell>
+                    <TableCell>
                       <Typography>{data.terminal}</Typography>
                     </TableCell>
                     <TableCell>
