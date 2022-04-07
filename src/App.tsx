@@ -17,6 +17,7 @@ import { ClosedImage } from "./assets/icons";
 import { AppProvider } from "./context";
 import AddIvsi from "./pages/components/ivsi/Add";
 import { AddAddressBinding } from "./pages/components/addressBindings/Add";
+import TetsudaiKun from "./pages/TetsudaiKun";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -87,6 +88,7 @@ function App() {
                     <Route path="/bindings/add" component={AddAddressBinding} />
                     <Route path="/bindings" component={Bindings} />
                     <Route path="/patterns" component={Patterns} />
+                    <Route path="/tkun" component={TetsudaiKun} />
                   </Switch>
                 </main>
               </SearchContext.Provider>
