@@ -257,6 +257,7 @@ const Apple = () => {
 
   const [tKunUploaded, setTKunUploaded] = useState<boolean>(false);
   const { percentage, tkunData, doImport, success, failed, importing } = useImportTkun();
+  const [ progress, setProgress ] = useState<string>("");
   const { user } = useContext<any>(UserContext);
 
   const onDrop = useCallback((acceptedFiles: any) => {
@@ -281,9 +282,16 @@ const Apple = () => {
     setTKunUploaded(success);
   }, [success]);
 
+  useEffect(() => {
+    setProgress("Uploading T-Kun " + percentage + "%");
+  }, [percentage, setProgress])
+
   const handlecancelTkunUpload = () => {
     setTKunUploaded(false);
   }
+
+  console.log(percentage, "perecentage");
+
   return (
     <>
     {
@@ -292,7 +300,7 @@ const Apple = () => {
         <input {...getInputProps()}></input>
         {
           importing && (
-            <h1>Uploading T-Kun {percentage} %</h1>
+            <h1>{progress}</h1>
           )
         }
         <Greetings name={user.fullName.split(" ")[0]} />
