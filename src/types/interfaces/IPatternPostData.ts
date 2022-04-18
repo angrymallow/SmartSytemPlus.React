@@ -22,6 +22,7 @@ interface IPatternValuePostData {
   isSOHeader: boolean,
   trim?: TrimValueEnum,
   prefix?: string,
+  sequence?: number
 }
 
 export type { IPatternPostData,  IPatternValuePostData };

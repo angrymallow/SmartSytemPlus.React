@@ -5,4 +5,5 @@ export interface PatternBindings {
   headerId: number,
   header: Header,
   option: HeaderValueOption,
+  sequence?: number,
 }

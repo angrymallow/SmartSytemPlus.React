@@ -299,7 +299,7 @@ const SetFixValue = (props: any) => {
     });
   };
 
-  if (valueSelections) {
+  if (valueSelections?.length) {
     return (
       <TextField
         id="select-default-value"
@@ -450,8 +450,11 @@ const SetValue = (props: any) => {
 
   const classes = useStyles();
 
+  console.log(option, "option on edit");
+
   const handleSelectValueOption = (e: any) => {
     const selected = e.target.value;
+
 
     // eslint-disable-next-line eqeqeq
     if (selected == ValueTypeEnum.changing) {
@@ -719,6 +722,7 @@ const SetupBindingStep = (props: any) => {
   }, [headerData, initialState]);
 
   const handleSaveBinding = (binding: PatternBindings) => {
+    console.log(binding, "on save binding")
     if (activeBindingTransaction === "add") {
       handleAddBinding(binding);
     } else {
