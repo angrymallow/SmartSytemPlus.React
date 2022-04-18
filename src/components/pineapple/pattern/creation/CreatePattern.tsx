@@ -416,6 +416,7 @@ const PatternBindingDetails = (props: PatternBindingDetailsProps) => {
   };
 
   const handleSavePatternBindings = (patternBindings: PatternBindings[]) => {
+    console.log(patternBindings);
     handleNext();
     setBindings(patternBindings);
   };
@@ -431,18 +432,19 @@ const PatternBindingDetails = (props: PatternBindingDetailsProps) => {
         const bindingPostData = {
           headerId: binding.headerId,
           setValueType: binding.option.valueType,
-          fixValue: binding.option.valueType === 1 ? binding.option.defaultValue.value : "",
+          fixValue: binding.option.valueType === ValueTypeEnum.fix ? binding.option.defaultValue.value : "",
           isSOHeader: binding.option.isSO,
           trim: binding.option.trim,
           prefix: binding.option.prefix,
           isBind: false,
+          sequence: binding.sequence,
           keyword: "",
           sheetName: "",
           colOffset: 0,
           rowOffset: 0,
         }
 
-        if (binding.option.valueType === 2) {
+        if (binding.option.valueType === ValueTypeEnum.changing) {
           const changingValue = binding.option.changingValue;
           bindingPostData.isBind = false;
           bindingPostData.keyword = changingValue.searchKeyword;

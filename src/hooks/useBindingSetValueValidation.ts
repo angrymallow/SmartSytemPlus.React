@@ -24,7 +24,7 @@ export function useBindingSetValueValidation(patternType: PatternTypeEnum, value
       } else if (patternType === PatternTypeEnum.PTC121) {
         setValidation({...initialState, searchKeywordRequired: true, rowOffsetRequired: true, columnOffsetRequired: true});
       } else if (patternType === PatternTypeEnum.PTC211) {
-        setValidation({...initialState, sheetNameRequired: true, searchKeywordRequired: true})
+        setValidation({...initialState, sheetNameRequired: true, searchKeywordRequired: true, rowOffsetRequired: true, columnOffsetRequired: true})
       } else if (patternType === PatternTypeEnum.PTC212) {
         setValidation({...initialState, sheetNameRequired: true, searchKeywordRequired: true, rowOffsetRequired: true})
       } else {
