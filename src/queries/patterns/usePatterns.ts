@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
+import { updateElementAccess } from "typescript";
 import { PatternBindingsService } from "../../services/patterns-services";
 import { getPatternsAsync } from "../../staticdata/patterns";
 import { IPatternDto, IPatternPostData } from "../../types/interfaces";
+import { IPatternDataDto } from "../../types/interfaces/IPatternDataDto";
 import IPatternLookup from "../../types/interfaces/IPatternLookup";
+import { PatternDetails } from "../../types/interfaces/PatternDetails";
 
 const key = 'patterns';
 
@@ -24,7 +27,6 @@ const usePatterns = (option: {loadList: boolean} = {loadList: false}) => {
                   enabled: option.loadList,
                   cacheTime: 0,
                 });
-  
 
   const { isLoading: isLookupLoading, data: lookup, } = useQuery<IPatternLookup>(`${key}-lookup`, () => 
                 PatternBindingsService.getLookup(), { 
@@ -46,6 +48,8 @@ const usePatterns = (option: {loadList: boolean} = {loadList: false}) => {
       },
     }
   );
+
+
 
   const { isLoading: isHeadersFetching, data: headers, } = useQuery<any>([`${key}-headers`, loadHeaders], () => 
                 PatternBindingsService.getHeaders(), { 
@@ -97,5 +101,34 @@ const usePatterns = (option: {loadList: boolean} = {loadList: false}) => {
   }
 }
 
+const usePattern = (patternId: string) => {
+
+  const { isLoading, data: pattern, } = useQuery<IPatternDataDto>("pattern", () => 
+                PatternBindingsService.getById(patternId), {
+                  cacheTime: 0,
+                  enabled: !!patternId
+                });
+
+  const { isLoading: isUpdating, mutate: updateMutate, isSuccess: isUpdated } = useMutation(
+    (payload) => PatternBindingsService.update(payload), {
+      onMutate: (payload: IPatternPostData) => {
+        console.log("send payload", payload);
+      },
+    }
+  );
+
+  const update = (pattern: IPatternPostData) => {
+    updateMutate(pattern);
+  }
+
+  return {
+    isLoading,
+    pattern,
+    isUpdating,
+    isUpdated,
+    update
+  }
+}
+
 export default usePatterns;
-export { usePatternss } 
+export { usePatternss, usePattern } 

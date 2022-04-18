@@ -1,5 +1,5 @@
 import { Route, Switch, useRouteMatch } from "react-router-dom";
-import CreatePattern from "../components/pineapple/pattern/creation/CreatePattern";
+import CreatePattern, { EditPattern } from "../components/pineapple/pattern/creation/CreatePattern";
 import {
   Box,
   Breadcrumbs,
@@ -80,7 +80,7 @@ export function PatternGrid() {
                   <TableCell>
                     <Typography variant="body2">
                       {pattern.patternName}
-                      <Link to="/">
+                      <Link to={`patterns/${pattern.id}`}>
                         <Typography variant="body2" color="primary">
                           View
                         </Typography>
@@ -140,6 +140,12 @@ const Patterns = () => {
       </Route>
       <Route path={`${path}/add`}>
         <CreatePattern />
+      </Route>
+      <Route path={`${path}/:id`} render={({location}) => {
+        const { state } = location; 
+        return <EditPattern/>
+
+      }}>
       </Route>
     </Switch>
   );
