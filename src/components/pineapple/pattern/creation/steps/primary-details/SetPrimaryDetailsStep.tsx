@@ -18,11 +18,11 @@ import { CheckCircleOutlined, EditOutlined, ErrorOutlineOutlined } from "@materi
 import LabeledText from "../../../../../textdisplay/LabeledText";
 import { colors } from "../../../../../../themes/variables";
 import { LookupContext } from "../../../../../../context";
-import useDuplicatePatterns from "../../../../../../queries/patterns/useDuplicatePatterns";
 import Description from "../../../../../description/Description";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { usePatterns } from "../../../../../../queries/patterns";
+import { PatternDetails } from "../../../../../../types/interfaces/PatternDetails";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -95,12 +95,8 @@ const PatternDetailsSchema = Yup.object({
 });
 
 type SetPrimaryDetailsProps = {
-  initialState: {
-    countryId: number;
-    name: string;
-    formId: number;
-    typeId: number;
-  };
+  initialState: PatternDetails,
+  isReadonly: boolean,
   handleSubmit(countryId: number, name: string, formId: number, typeId: number): void;
 };
 
@@ -113,7 +109,7 @@ const SetPrimaryDetailsStep = (props: SetPrimaryDetailsProps) => {
       name: initialState.name,
       country: initialState.countryId,
       form: initialState.formId,
-      type: initialState.typeId,
+      type: initialState.patternId,
     },
     validationSchema: PatternDetailsSchema,
     validateOnMount: true, 
@@ -127,10 +123,10 @@ const SetPrimaryDetailsStep = (props: SetPrimaryDetailsProps) => {
 
   useEffect(() => {
 
-    if (formik.values.name.length > 0 && formik.values.country > 0) 
+    if (formik.values.name.length > 0 && formik.values.country > 0 && !props.isReadonly) 
       duplicate.checkDuplicate(formik.values.name, formik.values.country);
       
-  }, [formik.values.name, formik.values.country]);
+  }, [formik.values.name, formik.values.country, props.isReadonly]);
 
   return (
     <Box marginTop={5} maxWidth="70%">
@@ -150,6 +146,7 @@ const SetPrimaryDetailsStep = (props: SetPrimaryDetailsProps) => {
             input={<BootstrapInput />}
             value={formik.values.country}
             onChange={formik.handleChange}
+            disabled={props.isReadonly}
           >
             {lookup?.countries?.map((country: any) => (
               <MenuItem key={country.id} value={country.id}>
@@ -170,6 +167,7 @@ const SetPrimaryDetailsStep = (props: SetPrimaryDetailsProps) => {
             endAdornment={formik.values.name.length > 0 && formik.values.country > 0 && <DuplicateAdornment loading={duplicate.loading} duplicate={duplicate.data?.isDuplicate} />}
             value={formik.values.name}
             onChange={formik.handleChange}
+            disabled={props.isReadonly}
           />
           {duplicate?.data?.isDuplicate && !duplicate.loading ? (
             <Typography variant="caption" color="error">

@@ -27,7 +27,7 @@ type TetsudaiKunProps = {
 
 
 const TetsudaiKunList = (props: TetsudaiKunProps) => {
-  const headers = ["Chassis", "Terminal", "Park Loc", "Customer", "Agent", "Model", "Inner Remarks", "Year", "Maker", "Engine Type", "Hybrid", "Car Class", "Car Type", "Purpose", "Body Type", "CC", "Fuel", "Net Weight", "Gross Weight", "Length", "Width", "Height"]
+  const headers = ["Chassis", "Terminal", "Park Loc", "Customer", "Agent", "Model", "Inner", "Inner Remarks", "Year", "Maker", "Engine Type", "Hybrid", "Car Class", "Car Type", "Purpose", "Body Type", "CC", "Fuel", "Net Weight", "Gross Weight", "Length", "Width", "Height"]
   const { data, toolbarHeaderText } = props;
 
   return (

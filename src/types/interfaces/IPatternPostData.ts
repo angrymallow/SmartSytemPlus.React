@@ -2,6 +2,7 @@ import { TrimValueEnum } from "../enums/TrimValueEnum";
 import { ValueTypeEnum } from "../enums/ValueTypeEnum";
 
 interface IPatternPostData {
+  id: number,
   patternName: string,
   countryId: number,
   ivsiFormId: number,
