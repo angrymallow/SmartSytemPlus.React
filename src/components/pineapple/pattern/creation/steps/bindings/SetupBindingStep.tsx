@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Box,
   createStyles,
@@ -727,7 +728,6 @@ const SetupBindingStep = (props: any) => {
 
   useEffect(() => {
     headersLookup.getHeaders();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -758,16 +758,6 @@ const SetupBindingStep = (props: any) => {
     }
   }, [headerData, initialState]);
 
-  useEffect(() => {
-
-    if (headers) {
-      const soHeadersInBindings = bindings?.filter((binding) => binding.header.canSetAsSO && binding.header.valueSource === ValueSourceEnum.Dynamic).map(binding => binding.header);
-      const tkunSOHeaders = headers?.filter((header) => header.valueSource === ValueSourceEnum.Tkun && header.canSetAsSO); 
-      setSoHeaders([...soHeadersInBindings, ...tkunSOHeaders].sort((a, b) => a.headerId - b.headerId));
-
-      console.log("new so headers", [...soHeadersInBindings, ...tkunSOHeaders], headers);
-    }
-  }, [headers, bindings])
 
   const handleSaveBinding = (binding: PatternBindings) => {
     console.log(binding, "on save binding")
@@ -837,50 +827,6 @@ const SetupBindingStep = (props: any) => {
     setComponentKey(componentKey + 1);
   };
 
-  const setSOFlag = (isSO: boolean, headerId: number) => {
-    const header = headers.find((header) => header.headerId === headerId);
-
-    function createEmptyBindings(header: Header){
-      const bindings: PatternBindings = {
-        header,
-        headerId: header.headerId,
-        option: {
-          changingValue: {
-            findSheet: "",
-            offset: {
-              column: 0,
-              row: 0,
-            },
-            searchKeyword: ""
-          },
-          defaultValue: {
-            bind: false,
-            value: ""
-          },
-          isSO: false,
-          prefix: "",
-          trim: TrimValueEnum.None,
-          valueType:ValueTypeEnum.fix
-        }
-      }
-
-      return bindings;
-    }
-
-    if (!!header) {
-      const currentBindings = bindings.find((binding) => binding.headerId === header.headerId);
-      if (!currentBindings) {
-        const newBinding = createEmptyBindings(header);
-        newBinding.option.isSO = isSO;
-        handleAddBinding(createEmptyBindings(header));
-      } else {
-        currentBindings.option.isSO = isSO;
-        handleUpdateBinding(currentBindings);
-      }
-    }
-  
-  }
-
   return (
     <>
       <Box display="flex" justifyContent="space-between">
@@ -919,7 +865,6 @@ const SetupBindingStep = (props: any) => {
           )}
         </div>
       </Box>
-      {detailsView.form === "IVSI Default Form" && <SetSOHeaders soHeaders={soHeaders} setSO={(isSO: boolean, headerId: number) => setSOFlag(isSO, headerId)} soBindings={bindings?.filter((b) => b.option.isSO)}/>} 
       <Button variant="outlined" color="primary" style={{ marginRight: 16 }} onClick={handleBack}>
         Back
       </Button>
