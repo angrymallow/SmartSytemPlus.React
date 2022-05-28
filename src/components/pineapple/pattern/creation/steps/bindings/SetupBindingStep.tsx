@@ -42,6 +42,7 @@ import {
 } from "../../../../../../helpers/binding-value-validation";
 import { PrimaryDetailsView } from "../primary-details/SetPrimaryDetailsStep";
 import { LookupContext } from "../../../../../../context";
+import { ValueSourceEnum } from "../../../../../../types/enums/ValueSourceEnum";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -507,6 +508,41 @@ const SetValue = (props: any) => {
   );
 };
 
+type SetSOHeadersProps = {
+  soHeaders: Header[],
+  setSO: Function,
+  soBindings: PatternBindings[]
+}
+
+
+
+const SetSOHeaders = (props: SetSOHeadersProps) => {
+
+  return (
+    <Box padding="20px" marginTop={2} width="80%">
+      <Typography variant="body2">Set S/O Headers</Typography>
+      <Box display="flex" flexWrap="wrap">
+        {
+          props.soHeaders?.map((soHeader) => (<div key={soHeader.headerId}>
+            <FormControlLabel
+              style={{ width: "25%", marginLeft: 5 }}
+              control={
+               <Checkbox  
+                color="primary" 
+                value={props.soBindings.some((binding) => binding.headerId === soHeader.headerId)}
+                onChange={(e) => props.setSO(e.target.checked, soHeader.headerId)}
+                inputProps={{ "aria-label": "controlled" }} 
+               />
+              }
+              label={soHeader.name}
+            />
+          </div>))
+        }
+      </Box>
+    </Box>
+  )
+}
+
 //#endregion
 
 //#region Select Header Component
@@ -536,11 +572,11 @@ const SelectHeader = (props: any) => {
           getOptionLabel={(option: Header) => option.name}
           renderInput={(params) => <TextField {...params} variant="outlined" />}
         />
-        <FormControlLabel
+        {/* <FormControlLabel
           style={{ width: "25%", marginLeft: 5 }}
           control={<Checkbox value={isSO} onChange={(e) => setIsSO(e.target.checked)} color="primary" inputProps={{ "aria-label": "controlled" }} />}
           label="S/O Header"
-        />
+        /> */}
       </Box>
     </>
   );
@@ -558,6 +594,7 @@ type PatternBindingProps = {
 };
 
 const PatternBinding = (props: PatternBindingProps) => {
+
   const { initialState, patternType, transactionType, headers, saveBinding, cancelUpdate } = props;
 
   const [header, setHeader] = useState<Header>(initialState.header);
@@ -682,14 +719,15 @@ const SetupBindingStep = (props: any) => {
   const [componentKey, setComponentKey] = useState<number>(0);
   const [headers, setHeaders] = useState<Header[]>(new Array<Header>());
   const [headerData, setHeaderData] = useState<any>();
-  // const { isLoading: headersLoading, data: headerData } = useHeaders();
-  
+  const [soHeaders, setSoHeaders] = useState<Header[]>(new Array<Header>());
+
   const lookup = useContext(LookupContext);
   const classes = useStyles();
   const { headersLookup} = usePatterns();
 
   useEffect(() => {
     headersLookup.getHeaders();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -711,7 +749,6 @@ const SetupBindingStep = (props: any) => {
   }, [details, lookup?.countries, lookup?.forms, lookup?.types]);
 
   useEffect(() => {
-    console.log("initial state", initialState);
     if (initialState?.length > 0) {
       const selectedHeaderIds = initialState?.map((initialHeader: any) => initialHeader.headerId);
       const filteredHeaders = headerData?.headers.filter((header: any) => !selectedHeaderIds.includes(header.headerId));
@@ -720,6 +757,17 @@ const SetupBindingStep = (props: any) => {
       setHeaders(headerData?.headers);
     }
   }, [headerData, initialState]);
+
+  useEffect(() => {
+
+    if (headers) {
+      const soHeadersInBindings = bindings?.filter((binding) => binding.header.canSetAsSO && binding.header.valueSource === ValueSourceEnum.Dynamic).map(binding => binding.header);
+      const tkunSOHeaders = headers?.filter((header) => header.valueSource === ValueSourceEnum.Tkun && header.canSetAsSO); 
+      setSoHeaders([...soHeadersInBindings, ...tkunSOHeaders].sort((a, b) => a.headerId - b.headerId));
+
+      console.log("new so headers", [...soHeadersInBindings, ...tkunSOHeaders], headers);
+    }
+  }, [headers, bindings])
 
   const handleSaveBinding = (binding: PatternBindings) => {
     console.log(binding, "on save binding")
@@ -735,9 +783,10 @@ const SetupBindingStep = (props: any) => {
     currentBindings.push(binding);
     setBindings(currentBindings);
 
-    const newHeaders = headers.filter((h) => h.headerId !== binding.headerId);
-
-    setHeaders(newHeaders);
+    if (binding.header.valueSource === ValueSourceEnum.Dynamic) {
+      const newHeaders = headers.filter((h) => h.headerId !== binding.headerId);
+      setHeaders(newHeaders);
+    }
     setActiveBinding(initialPatternBindingState);
     setComponentKey(componentKey + 1);
   };
@@ -788,6 +837,50 @@ const SetupBindingStep = (props: any) => {
     setComponentKey(componentKey + 1);
   };
 
+  const setSOFlag = (isSO: boolean, headerId: number) => {
+    const header = headers.find((header) => header.headerId === headerId);
+
+    function createEmptyBindings(header: Header){
+      const bindings: PatternBindings = {
+        header,
+        headerId: header.headerId,
+        option: {
+          changingValue: {
+            findSheet: "",
+            offset: {
+              column: 0,
+              row: 0,
+            },
+            searchKeyword: ""
+          },
+          defaultValue: {
+            bind: false,
+            value: ""
+          },
+          isSO: false,
+          prefix: "",
+          trim: TrimValueEnum.None,
+          valueType:ValueTypeEnum.fix
+        }
+      }
+
+      return bindings;
+    }
+
+    if (!!header) {
+      const currentBindings = bindings.find((binding) => binding.headerId === header.headerId);
+      if (!currentBindings) {
+        const newBinding = createEmptyBindings(header);
+        newBinding.option.isSO = isSO;
+        handleAddBinding(createEmptyBindings(header));
+      } else {
+        currentBindings.option.isSO = isSO;
+        handleUpdateBinding(currentBindings);
+      }
+    }
+  
+  }
+
   return (
     <>
       <Box display="flex" justifyContent="space-between">
@@ -797,15 +890,17 @@ const SetupBindingStep = (props: any) => {
             {headersLookup.loading ? (
               <p>Loading list of headers...</p>
             ) : (
-              <PatternBinding
-                key={componentKey}
-                initialState={activeBinding}
-                patternType={details.patternId}
-                transactionType={activeBindingTransaction}
-                saveBinding={handleSaveBinding}
-                headers={headers}
-                cancelUpdate={handleCancelEdit}
-              />
+              <>
+                <PatternBinding
+                  key={componentKey}
+                  initialState={activeBinding}
+                  patternType={details.patternId}
+                  transactionType={activeBindingTransaction}
+                  saveBinding={handleSaveBinding}
+                  headers={headers?.filter((header) => header.valueSource === ValueSourceEnum.Dynamic)?.sort((a, b) => a.headerId - b.headerId)}
+                  cancelUpdate={handleCancelEdit}
+                />
+              </>
             )}
           </Box>
         </Box>
@@ -818,12 +913,13 @@ const SetupBindingStep = (props: any) => {
               <EmptyHeaderImage />
             </>
           ) : (
-            bindings.map((binding) => (
+            bindings.filter((binding) => binding.header.valueSource === ValueSourceEnum.Dynamic)?.map((binding) => (
               <HeaderItem binding={binding} key={binding.headerId} onEdit={handleEditBinding} onRemove={handleRemoveBinding} />
             ))
           )}
         </div>
       </Box>
+      {detailsView.form === "IVSI Default Form" && <SetSOHeaders soHeaders={soHeaders} setSO={(isSO: boolean, headerId: number) => setSOFlag(isSO, headerId)} soBindings={bindings?.filter((b) => b.option.isSO)}/>} 
       <Button variant="outlined" color="primary" style={{ marginRight: 16 }} onClick={handleBack}>
         Back
       </Button>
