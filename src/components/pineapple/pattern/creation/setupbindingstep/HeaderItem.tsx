@@ -1,7 +1,8 @@
 import { makeStyles, Theme, createStyles, Typography, IconButton } from "@material-ui/core";
 import { DeleteOutlined, EditOutlined } from "@material-ui/icons";
-import { colors } from "../../../../../../../../themes/variables";
-import { ValueTypeEnum } from "../../../../../../../../types/enums/ValueTypeEnum";
+import { colors } from "../../../../../themes/variables";
+import { ValueTypeEnum } from "../../../../../types/enums/ValueTypeEnum";
+import { PatternBindings } from "../../../../../types/interfaces";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -35,38 +36,28 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 
-type HeaderItemProps = {
-  id: number,
-  name: string,
-  isSO: boolean,
-  valueType: ValueTypeEnum,
-  noAction: boolean,
-  onEdit: (id: number) => void,
-  onRemove: (id: number) => void,
-}
-
-const HeaderItem = (props: HeaderItemProps) => {
-  const { id, name, isSO, valueType, noAction, onEdit, onRemove } = props;
+const HeaderItem = (props: any) => {
   const classes = useStyles();
+  const { binding, onEdit, onRemove, noAction }: { binding: PatternBindings; onEdit: Function; onRemove: Function; noAction: boolean } = props;
 
   const handleEditHeader = () => {
-    onEdit(id);
+    onEdit(binding.headerId);
   };
 
   const handleRemoveHeader = () => {
-    onRemove(id);
+    onRemove(binding.headerId);
   };
 
   return (
     <div className={classes.container}>
       <div className={classes.indicator}></div>
       <Typography variant="body2" color="primary">
-        {name}
+        {binding.header.name}
       </Typography>
       <Typography variant="body2" color="textSecondary">
-        {valueType === ValueTypeEnum.fix ? "Fix" : "Changing"}
+        {binding.option.valueType === ValueTypeEnum.fix ? "Fix" : "Changing"}
       </Typography>
-      {isSO ? (
+      {binding.option.isSO ? (
         <div style={{backgroundColor: "white", paddingLeft: "5px", paddingRight: "5px",  borderRadius: "5px"}}>
           <Typography variant="body2" color="secondary">
             S/O
@@ -86,5 +77,6 @@ const HeaderItem = (props: HeaderItemProps) => {
     </div>
   );
 };
+
 
 export default HeaderItem;

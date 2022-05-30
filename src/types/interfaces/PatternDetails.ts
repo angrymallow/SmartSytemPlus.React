@@ -4,4 +4,5 @@ export interface PatternDetails {
   countryId: number,
   formId: number,
   patternId: number,
+  soHeaders: string,
 }

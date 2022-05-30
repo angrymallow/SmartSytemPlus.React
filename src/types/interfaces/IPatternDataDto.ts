@@ -4,6 +4,7 @@ export interface IPatternDataDto {
   countryId: number,
   ivsiFormId: number,
   patternTypeId: number,
+  soHeaders: string,
   uploadInfo: {
     fullName: string,
     stamp: string

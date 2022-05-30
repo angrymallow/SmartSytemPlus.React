@@ -13,16 +13,16 @@ import {
   Typography,
 } from "@material-ui/core";
 import { useContext, useEffect } from "react";
-import { BootstrapInput, StyledInputLabel } from "../../../../../../custom/input";
+import { BootstrapInput, StyledInputLabel } from "../../../../../custom/input";
 import { CheckCircleOutlined, EditOutlined, ErrorOutlineOutlined } from "@material-ui/icons";
-import LabeledText from "../../../../../textdisplay/LabeledText";
-import { colors } from "../../../../../../themes/variables";
-import { LookupContext } from "../../../../../../context";
-import Description from "../../../../../description/Description";
+import LabeledText from "../../../../textdisplay/LabeledText";
+import { colors } from "../../../../../themes/variables";
+import { LookupContext } from "../../../../../context";
+import Description from "../../../../description/Description";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { usePatterns } from "../../../../../../queries/patterns";
-import { PatternDetails } from "../../../../../../types/interfaces/PatternDetails";
+import { usePatterns } from "../../../../../queries/patterns";
+import { PatternDetails } from "../../../../../types/interfaces/PatternDetails";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
