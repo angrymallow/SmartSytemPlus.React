@@ -3,14 +3,14 @@ import { useEffect, useState, createContext } from "react";
 import { PatternBindings } from "../../../../types/interfaces/PatternBinding";
 import { PatternDetails } from "../../../../types/interfaces/PatternDetails";
 import { Link, useParams } from "react-router-dom";
-import SetPrimaryDetailsStep from "./steps/primary-details/SetPrimaryDetailsStep";
-import SetupBindingStep from "./steps/bindings/SetupBindingStep";
-import ReviewPatternStep from "./steps/complete/ReviewPatternStep";
+import SetPrimaryDetailsStep from "./setprimarydetailsstep/SetPrimaryDetailsStep";
+import SetupBindingStep from "./setupbindingstep/SetupBindingStep";
+import ReviewPatternStep from "./reviewpatternstep/ReviewPatternStep";
 import { CompletedImage } from "../../../../assets/icons";
 import { PageNavigation } from "../../../common";
 import { LookupContext } from "../../../../context";
 import { usePatterns } from "../../../../queries/patterns";
-import { IPattern, IPatternPostData } from "../../../../types/interfaces";
+import { Header, IPattern, IPatternPostData } from "../../../../types/interfaces";
 import { usePattern } from "../../../../queries/patterns/usePatterns";
 import { ValueTypeEnum } from "../../../../types/enums/ValueTypeEnum";
 
@@ -248,6 +248,7 @@ const CreatePattern = () => {
             countryId: 0,
             patternId: 0,
             formId: 0,
+            soHeaders: "",
           },
           bindings: new Array<PatternBindings>()
         }}
@@ -296,6 +297,7 @@ const EditPattern = () => {
         patternId: pattern.patternTypeId,
         formId: pattern.ivsiFormId,
         name: pattern.patternName,
+        soHeaders: pattern.soHeaders,
       },
       bindings: pattern.bindings.map((binding) => {
       
@@ -393,6 +395,7 @@ const PatternBindingDetails = (props: PatternBindingDetailsProps) => {
   const [activeStep, setActiveStep] = useState(0);
   const [bindings, setBindings] = useState<PatternBindings[]>(initialState.bindings);
   const [details, setDetails] = useState<PatternDetails>(initialState.details);
+  const [soHeaders, setSoHeaders] = useState<string>(initialState.details?.soHeaders);
 
   const setPrimaryDetails = (countryId: number, name: string, typeId: number, formId: number) => {
     
@@ -402,6 +405,7 @@ const PatternBindingDetails = (props: PatternBindingDetailsProps) => {
       countryId,
       formId: formId,
       patternId: typeId,
+      soHeaders: soHeaders, 
     })
 
     handleNext();
@@ -415,11 +419,13 @@ const PatternBindingDetails = (props: PatternBindingDetailsProps) => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const handleSavePatternBindings = (patternBindings: PatternBindings[]) => {
+  const handleSavePatternBindings = (patternBindings: PatternBindings[], soHeaders: Header[]) => {
     console.log(patternBindings);
     handleNext();
     setBindings(patternBindings);
+    setSoHeaders(soHeaders.map((soHeader) => soHeader.headerId).join(","));
   };
+  
 
   const handleSubmitPattern = () => {
     const postData: IPatternPostData = {
@@ -427,6 +433,7 @@ const PatternBindingDetails = (props: PatternBindingDetailsProps) => {
       patternName: details.name,
       countryId: details.countryId,
       ivsiFormId: details.formId,
+      soHeaders: soHeaders,
       patternTypeId: details.patternId,
       patternValues: bindings.map((binding) => {
         const bindingPostData = {
@@ -460,6 +467,9 @@ const PatternBindingDetails = (props: PatternBindingDetailsProps) => {
     handleNext();
   };
 
+  useEffect(() => {
+    console.log("SO headers", soHeaders);
+  }, [soHeaders]);
   return (
     <Box marginTop={5}>
       <Typography variant="h4">{ `${mode} Pattern` }</Typography>
@@ -475,7 +485,7 @@ const PatternBindingDetails = (props: PatternBindingDetailsProps) => {
                   {activeStep === 0 ? (
                     <SetPrimaryDetailsStep initialState={{ ...details }} handleSubmit={setPrimaryDetails} isReadonly={mode === "Edit"} />
                   ) : activeStep === 1 ? (
-                    <SetupBindingStep initialState={bindings} handleBack={handleBack} details={details} handleNext={handleSavePatternBindings} />
+                    <SetupBindingStep initialState={{bindings, soHeaders}} handleBack={handleBack} details={details} handleNext={handleSavePatternBindings} />
                   ) : (
                     <ReviewPatternStep
                       handleBack={handleBack}

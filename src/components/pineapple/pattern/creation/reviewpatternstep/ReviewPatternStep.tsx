@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import { Box, Button, CircularProgress, FormControl, Typography } from "@material-ui/core";
 // import { useFormik } from "formik";
-import { PrimaryDetailsView } from "../primary-details/SetPrimaryDetailsStep";
-import { HeaderItem } from "../bindings/SetupBindingStep";
+import { PrimaryDetailsView } from "../setprimarydetailsstep/SetPrimaryDetailsStep";
+import { HeaderItem } from "../setupbindingstep/SetupBindingStep";
 // import StyledInputLabel from "../../../custom/input/StyledInputLabel";
-import BootstrapInput from "../../../../../../custom/input/BootstrapInput";
-import { LookupContext } from "../../../../../../context";
+import BootstrapInput from "../../../../../custom/input/BootstrapInput";
+import { LookupContext } from "../../../../../context";
 
 function ReviewPatternStep(props: any) {
   const { handleBack, handleSubmit, details, bindings, innerLimit, submitting } = props;

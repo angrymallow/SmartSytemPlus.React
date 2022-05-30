@@ -7,6 +7,7 @@ interface IPatternPostData {
   countryId: number,
   ivsiFormId: number,
   patternTypeId: number,
+  soHeaders: string,
   patternValues: IPatternValuePostData[]
 }
 
